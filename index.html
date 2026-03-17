@@ -3,1113 +3,930 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Suite Ingeniería Estructural NSR-10 · Ing. Juan José Osorio</title>
+<title>Plataforma NSR-10 · Gestión de Materiales y Costos</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --bg:        #060810;
-  --bg2:       #0c0f1a;
-  --surface:   #0f1220;
-  --surface2:  #151929;
-  --border:    #1e2440;
-  --border2:   #252c4a;
-  --neon-b:    #00d4ff;
-  --neon-g:    #00ff9f;
-  --neon-o:    #ff9f00;
-  --neon-r:    #ff4d6d;
-  --neon-v:    #bf5fff;
-  --text:      #dde4f5;
-  --muted:     #5a6280;
-  --muted2:    #3a4060;
+  --bg:#05070f;--bg2:#080b16;--srf:#0c1020;--srf2:#101525;--srf3:#141a2e;
+  --brd:#1c2338;--brd2:#242d45;--brd3:#2e3a58;
+  --c:#00c8ff;--g:#00e896;--o:#ffb800;--r:#ff4060;--v:#a855f7;
+  --c10:rgba(0,200,255,.10);--g10:rgba(0,232,150,.10);--o10:rgba(255,184,0,.10);
+  --txt:#d8e0f5;--txt2:#8090b0;--txt3:#4a566e;
+  --fd:'Barlow Condensed',sans-serif;--fm:'Fira Code',monospace;--fb:'Barlow',sans-serif;
 }
-
 *{box-sizing:border-box;margin:0;padding:0;}
-
 html{scroll-behavior:smooth;}
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Exo 2',sans-serif;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-/* ── Background FX ── */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,212,255,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(0,255,159,0.04) 0%, transparent 60%),
-    linear-gradient(rgba(0,212,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,212,255,0.015) 1px, transparent 1px);
-  background-size:100% 100%,100% 100%,32px 32px,32px 32px;
-  pointer-events:none;z-index:0;
-}
-
-/* scan line */
-body::after{
-  content:'';
-  position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
-  pointer-events:none;z-index:0;
-}
-
+body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;font-size:14px;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 60% at 0% 0%,rgba(0,200,255,.05) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 100% 100%,rgba(0,232,150,.04) 0%,transparent 50%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:linear-gradient(rgba(0,200,255,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,255,.016) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0;}
 .z1{position:relative;z-index:1;}
-
-/* ── HEADER ── */
-.header-bar{
-  background:linear-gradient(90deg,var(--bg2),var(--surface));
-  border-bottom:1px solid var(--border);
-  padding:0 2rem;
-  height:64px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
-  backdrop-filter:blur(20px);
-}
-
-.logo-text{
-  font-family:'Rajdhani',sans-serif;
-  font-size:1.3rem;font-weight:700;
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  color:var(--neon-b);
-  text-shadow:0 0 20px rgba(0,212,255,0.5);
-}
-
-.version-badge{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.65rem;
-  color:var(--muted);
-  border:1px solid var(--border2);
-  padding:3px 8px;
-  border-radius:4px;
-  letter-spacing:0.1em;
-}
-
-/* ── ELEMENT SELECTOR TABS ── */
-.elem-nav{
-  display:flex;gap:4px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:6px;
-  flex-wrap:wrap;
-}
-
-.elem-btn{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:10px 14px;
-  border:1px solid transparent;
-  border-radius:10px;
-  cursor:pointer;
-  transition:all 0.25s ease;
-  background:transparent;
-  color:var(--muted);
-  font-family:'Exo 2',sans-serif;
-  font-size:0.72rem;font-weight:600;
-  letter-spacing:0.05em;
-  text-transform:uppercase;
-  flex:1;min-width:90px;
-}
-
-.elem-btn svg{width:22px;height:22px;transition:all 0.25s;}
-
-.elem-btn:hover{
-  background:var(--surface2);
-  color:var(--text);
-  border-color:var(--border2);
-}
-
-.elem-btn.active{
-  background:linear-gradient(135deg,rgba(0,212,255,0.12),rgba(0,212,255,0.04));
-  color:var(--neon-b);
-  border-color:rgba(0,212,255,0.4);
-  box-shadow:0 0 20px rgba(0,212,255,0.08),inset 0 0 20px rgba(0,212,255,0.04);
-}
-
-/* ── CARD / BENTO ── */
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:16px;
-  transition:border-color 0.3s,box-shadow 0.3s;
-}
-.card:hover{border-color:var(--border2);}
-
-.card-neon-b{border-color:rgba(0,212,255,0.25);background:linear-gradient(135deg,var(--surface),#0f1828);}
-.card-neon-g{border-color:rgba(0,255,159,0.2);background:linear-gradient(135deg,var(--surface),#0f1e18);}
-.card-neon-o{border-color:rgba(255,159,0,0.2);background:linear-gradient(135deg,var(--surface),#1e1808);}
-
-/* ── INPUTS ── */
-.inp{
-  width:100%;
-  background:var(--bg2);
-  border:1px solid var(--border2);
-  border-radius:10px;
-  color:var(--text);
-  font-family:'Share Tech Mono',monospace;
-  font-size:1rem;
-  padding:0.65rem 1rem;
-  outline:none;
-  transition:border-color 0.2s,box-shadow 0.2s;
-}
-.inp:focus{
-  border-color:var(--neon-b);
-  box-shadow:0 0 0 3px rgba(0,212,255,0.12);
-}
-.inp::placeholder{color:var(--muted2);}
+/* HEADER */
+#hdr{position:sticky;top:0;z-index:200;background:rgba(5,7,15,.93);border-bottom:1px solid var(--brd);backdrop-filter:blur(24px);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.hlogo{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--c);text-shadow:0 0 22px rgba(0,200,255,.5);display:flex;align-items:center;gap:10px;}
+.hdot{width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);animation:blink 2.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.hbdg{font-family:'Fira Code',monospace;font-size:.6rem;border:1px solid var(--brd2);border-radius:4px;padding:2px 7px;color:var(--txt2);}
+.hbdg.live{border-color:rgba(0,232,150,.35);color:var(--g);}
+/* PRIMARY TABS */
+#tbr{display:flex;gap:2px;background:var(--srf);border-bottom:1px solid var(--brd);padding:0 1.5rem;overflow-x:auto;}
+#tbr::-webkit-scrollbar{display:none;}
+.tb{font-family:'Barlow Condensed',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.65rem 1.1rem;border:none;background:transparent;color:var(--txt2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.tb:hover{color:var(--txt);}
+.tb.on{color:var(--c);border-bottom-color:var(--c);}
+/* ELEMENT CHIPS */
+.ec-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.9rem;}
+.ec{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.4rem .9rem;border:1px solid var(--brd2);border-radius:7px;background:var(--srf2);color:var(--txt2);cursor:pointer;transition:all .2s;}
+.ec:hover{border-color:var(--brd3);color:var(--txt);}
+.ec.on{background:var(--c10);border-color:rgba(0,200,255,.4);color:var(--c);box-shadow:0 0 14px rgba(0,200,255,.07);}
+/* CARDS */
+.card{background:var(--srf);border:1px solid var(--brd);border-radius:13px;transition:border-color .25s;}
+.card:hover{border-color:var(--brd2);}
+.cc{background:linear-gradient(145deg,var(--srf),#0a1422);border-color:rgba(0,200,255,.22);}
+.cg{background:linear-gradient(145deg,var(--srf),#0a1a14);border-color:rgba(0,232,150,.18);}
+.co{background:linear-gradient(145deg,var(--srf),#1a1205);border-color:rgba(255,184,0,.18);}
+/* INPUTS */
+.inp{width:100%;background:var(--bg2);border:1px solid var(--brd2);border-radius:8px;color:var(--txt);font-family:'Fira Code',monospace;font-size:.85rem;padding:.5rem .8rem;outline:none;transition:border-color .2s,box-shadow .2s;}
+.inp:focus{border-color:var(--c);box-shadow:0 0 0 3px rgba(0,200,255,.1);}
+.inp::placeholder{color:var(--txt3);}
 select.inp option{background:var(--bg2);}
-
-.lbl{
-  display:block;
-  font-size:0.67rem;font-weight:700;
-  letter-spacing:0.13em;text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:5px;
-  font-family:'Share Tech Mono',monospace;
-}
-
-/* ── RESULT CARDS ── */
-.res-card{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:1rem 1.25rem;
-  position:relative;
-  overflow:hidden;
-  transition:all 0.3s;
-}
-.res-card::after{
-  content:'';
-  position:absolute;bottom:0;left:0;right:0;
-  height:2px;
-  border-radius:0 0 12px 12px;
-}
-.res-card.c-cem::after{background:var(--neon-b);}
-.res-card.c-are::after{background:var(--neon-o);}
-.res-card.c-gra::after{background:var(--neon-g);}
-.res-card.c-agu::after{background:#60c8ff;}
-
-.res-val{
-  font-family:'Share Tech Mono',monospace;
-  font-size:1.85rem;font-weight:400;
-  line-height:1;
-  animation:fadeUp .35s ease;
-}
-@keyframes fadeUp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── SVG DIAGRAM ── */
-.diagram-box{
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  padding:1.5rem;
-  min-height:220px;
-}
-
-/* ── RANGE ── */
-input[type=range]{
-  -webkit-appearance:none;width:100%;height:4px;
-  border-radius:4px;background:var(--border2);outline:none;
-}
-input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:16px;height:16px;
-  border-radius:50%;background:var(--neon-b);cursor:pointer;
-  box-shadow:0 0 8px rgba(0,212,255,0.5);
-}
-
-/* ── BUTTONS ── */
-.btn{
-  font-family:'Rajdhani',sans-serif;font-weight:700;
-  letter-spacing:0.08em;text-transform:uppercase;
-  font-size:0.88rem;
-  padding:0.7rem 1.5rem;
-  border:none;border-radius:10px;
-  cursor:pointer;
-  display:inline-flex;align-items:center;gap:8px;
-  transition:all 0.2s;
-}
-.btn-blue{background:rgba(0,212,255,0.15);color:var(--neon-b);border:1px solid rgba(0,212,255,0.35);}
-.btn-blue:hover{background:rgba(0,212,255,0.25);box-shadow:0 0 20px rgba(0,212,255,0.2);transform:translateY(-1px);}
-.btn-wa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;}
-.btn-wa:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,211,102,0.3);}
-.btn-ghost{background:var(--surface2);color:var(--muted);border:1px solid var(--border2);}
-.btn-ghost:hover{color:var(--text);border-color:var(--border);}
-
-/* ── SECTION TITLE ── */
-.sec-title{
-  font-family:'Rajdhani',sans-serif;
-  font-size:0.72rem;font-weight:700;
-  letter-spacing:0.2em;text-transform:uppercase;
-  color:var(--muted);
-  display:flex;align-items:center;gap:8px;
-}
-.sec-title::before{content:'';width:16px;height:1px;background:var(--neon-b);}
-
-/* ── DOSAGE TABLE ── */
-.dos-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:6px 0;
-  border-bottom:1px solid var(--border);
-  font-size:0.82rem;
-}
-.dos-row:last-child{border:none;}
-.dos-val{
-  font-family:'Share Tech Mono',monospace;
-  font-size:0.8rem;
-  padding:3px 9px;
-  border-radius:6px;
-  background:var(--surface2);
-  border:1px solid var(--border2);
-}
-
-/* ── PROGRESS BAR ── */
-.prog-wrap{height:5px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:6px;}
-.prog-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1);}
-
-/* ── TOAST ── */
-#toast{
-  position:fixed;bottom:2rem;left:50%;
-  transform:translateX(-50%) translateY(12px);
-  background:var(--neon-g);color:#060810;
-  font-weight:700;font-size:0.85rem;
-  padding:.65rem 1.5rem;border-radius:999px;
-  opacity:0;transition:all .3s;pointer-events:none;z-index:999;
-  font-family:'Rajdhani',sans-serif;letter-spacing:.06em;
-}
+.lbl{display:block;font-family:'Fira Code',monospace;font-size:.58rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2);margin-bottom:4px;}
+/* SEC HEADER */
+.sh{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--txt2);display:flex;align-items:center;gap:8px;margin-bottom:.9rem;}
+.sh::before{content:'';width:16px;height:1px;background:linear-gradient(90deg,var(--c),transparent);}
+/* RESULT CARD */
+.rc{background:var(--bg2);border:1px solid var(--brd);border-radius:10px;padding:.8rem 1rem;position:relative;overflow:hidden;}
+.rc::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;}
+.rc-c::before{background:linear-gradient(90deg,var(--c),transparent);}
+.rc-o::before{background:linear-gradient(90deg,var(--o),transparent);}
+.rc-g::before{background:linear-gradient(90deg,var(--g),transparent);}
+.rc-b::before{background:linear-gradient(90deg,#60c8ff,transparent);}
+.rc-v::before{background:linear-gradient(90deg,var(--v),transparent);}
+.rn{font-family:'Fira Code',monospace;font-size:1.6rem;font-weight:500;line-height:1;animation:pop .3s ease;}
+@keyframes pop{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+/* BARS */
+.bw{height:3px;background:var(--brd);border-radius:3px;overflow:hidden;margin-top:5px;}
+.bf{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+/* PANELS */
+.tp{display:none;}.tp.on{display:block;animation:fadeUp .25s ease;}
+.sp{display:none;}.sp.on{display:block;animation:fadeUp .25s ease;}
+/* FORMULA */
+.fml{font-family:'Fira Code',monospace;font-size:.65rem;background:var(--srf3);border:1px solid var(--brd2);border-radius:5px;padding:3px 8px;color:var(--c);display:inline-block;margin-top:4px;}
+/* CUANTIA BTNS */
+.qrow{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:7px;}
+.qb{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.45rem .4rem;text-align:center;border:1px solid var(--brd2);border-radius:7px;background:var(--srf2);color:var(--txt2);cursor:pointer;transition:all .2s;}
+.qb:hover{border-color:var(--brd3);color:var(--txt);}
+.qb.on{background:var(--o10);border-color:rgba(255,184,0,.4);color:var(--o);}
+/* COST TOTAL */
+.ctot{background:linear-gradient(135deg,rgba(0,200,255,.07),rgba(0,232,150,.05));border:1px solid rgba(0,200,255,.28);border-radius:13px;padding:1.1rem 1.4rem;text-align:center;}
+.cn{font-family:'Fira Code',monospace;font-size:2rem;font-weight:500;color:var(--g);animation:pop .4s ease;}
+/* DIAGRAM BOX */
+.db{background:var(--bg2);border:1px solid var(--brd);border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.1rem;min-height:190px;overflow:hidden;}
+/* BUTTONS */
+.btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;padding:.6rem 1.25rem;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
+.btn-c{background:var(--c10);color:var(--c);border:1px solid rgba(0,200,255,.32);}
+.btn-c:hover{background:rgba(0,200,255,.17);box-shadow:0 4px 16px rgba(0,200,255,.18);transform:translateY(-1px);}
+.btn-wa{background:linear-gradient(135deg,#25d366,#1a9e55);color:#fff;}
+.btn-wa:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(37,211,102,.28);}
+.btn-gh{background:var(--srf2);color:var(--txt2);border:1px solid var(--brd2);}
+.btn-gh:hover{color:var(--txt);border-color:var(--brd3);}
+/* RANGE */
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:4px;background:var(--brd2);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--c);cursor:pointer;box-shadow:0 0 7px rgba(0,200,255,.5);}
+/* TROW */
+.tr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--brd);font-size:.78rem;}
+.tr:last-child{border:none;}
+.tv{font-family:'Fira Code',monospace;font-size:.74rem;padding:2px 7px;border-radius:5px;background:var(--srf3);border:1px solid var(--brd2);}
+/* NOTICE */
+.notice{background:var(--c10);border:1px solid rgba(0,200,255,.2);border-radius:8px;padding:.6rem .85rem;font-size:.68rem;color:var(--txt2);display:flex;gap:6px;line-height:1.5;}
+/* TOAST */
+#toast{position:fixed;bottom:1.75rem;left:50%;transform:translateX(-50%) translateY(14px);background:var(--g);color:#040a06;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.83rem;letter-spacing:.06em;padding:.55rem 1.3rem;border-radius:999px;opacity:0;transition:all .3s;pointer-events:none;z-index:999;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
-/* ── NEON TEXT ── */
-.t-blue{color:var(--neon-b);}
-.t-green{color:var(--neon-g);}
-.t-orange{color:var(--neon-o);}
-.t-red{color:var(--neon-r);}
-.t-violet{color:var(--neon-v);}
-
-/* ── ELEMENT PANEL ── */
-.elem-panel{display:none;}
-.elem-panel.active{display:block;animation:fadeUp .3s ease;}
-
-/* ── NOTICE ── */
-.notice{
-  background:rgba(0,212,255,0.06);
-  border:1px solid rgba(0,212,255,0.2);
-  border-radius:10px;
-  padding:.75rem 1rem;
-  font-size:.78rem;color:var(--muted);
-  display:flex;gap:8px;align-items:flex-start;
-}
-
-/* ── FORMULA CHIP ── */
-.formula{
-  font-family:'Share Tech Mono',monospace;
-  font-size:.78rem;
-  background:var(--surface2);
-  border:1px solid var(--border2);
-  border-radius:8px;
-  padding:6px 12px;
-  color:var(--neon-b);
-  display:inline-block;
-  margin-top:4px;
-}
-
-@media(max-width:768px){
-  .header-bar{padding:0 1rem;}
-  .elem-btn{min-width:70px;padding:8px 8px;font-size:.62rem;}
-  .res-val{font-size:1.4rem;}
-}
+/* GRIDS */
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;align-items:start;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.g2c{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:960px){.g3{grid-template-columns:1fr 1fr!important;}.g2{grid-template-columns:1fr!important;}}
+@media(max-width:620px){.g3{grid-template-columns:1fr!important;}.rn{font-size:1.3rem;}.cn{font-size:1.5rem;}}
+/* PRICE PREFIX */
+.pp{position:relative;}.pp .pfx{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-family:'Fira Code',monospace;font-size:.75rem;color:var(--txt2);pointer-events:none;}.pp input{padding-left:1.6rem;}
+/* COST BREAKDOWN SCROLL */
+#cbd{max-height:300px;overflow-y:auto;}
+#cbd::-webkit-scrollbar{width:4px;}
+#cbd::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px;}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ HEADER ═══════════════════════ -->
-<header class="header-bar z1">
-  <div style="display:flex;align-items:center;gap:16px">
-    <div style="width:8px;height:8px;border-radius:50%;background:var(--neon-b);box-shadow:0 0 12px var(--neon-b);animation:pulse 2s infinite"></div>
-    <span class="logo-text">NSR-10 · Suite Estructural</span>
+<div id="hdr" class="z1">
+  <div class="hlogo"><div class="hdot"></div>NSR-10 · Plataforma Estructural</div>
+  <div style="display:flex;gap:7px;align-items:center"><span class="hbdg">ACI 318 · v3.0</span><span class="hbdg live">● ACTIVO</span></div>
+</div>
+
+<div id="tbr" class="z1">
+  <button class="tb on" onclick="sTab('cim',this)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="14" width="18" height="7" rx="1"/><rect x="7" y="8" width="10" height="6" rx="1"/><line x1="12" y1="3" x2="12" y2="8"/></svg>Cimentación</button>
+  <button class="tb" onclick="sTab('ver',this)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="20" rx="2"/></svg>Estructura Vertical</button>
+  <button class="tb" onclick="sTab('hor',this)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="1"/></svg>Estructura Horizontal</button>
+  <button class="tb" onclick="sTab('cir',this)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,20 3,14 8,14 8,9 13,9 13,4 20,4"/></svg>Circulaciones</button>
+  <button class="tb" onclick="sTab('cos',this)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Costos APU</button>
+  <button class="tb" onclick="sTab('res',this)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Resumen</button>
+</div>
+
+<main class="z1 max-w-7xl mx-auto px-4 py-5">
+
+<!-- ── CIMENTACIÓN ── -->
+<div id="tp-cim" class="tp on">
+  <div class="ec-row">
+    <button class="ec on" onclick="sSub('cim','za',this)">⬛ Zapata Aislada</button>
+    <button class="ec" onclick="sSub('cim','zc',this)">⬜ Zapata Combinada</button>
   </div>
-  <div style="display:flex;align-items:center;gap:12px">
-    <span class="version-badge">v2.0 · ACI 318</span>
-    <span class="version-badge t-green">ONLINE</span>
+  <div id="sp-cim-za" class="sp on"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Zapata Aislada</div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Largo L (m)</label><input class="inp" id="za-L" type="number" value="1.20" min=".1" step=".01" oninput="calc('za')"/></div>
+          <div><label class="lbl">Ancho A (m)</label><input class="inp" id="za-A" type="number" value="1.20" min=".1" step=".01" oninput="calc('za')"/></div>
+        </div>
+        <div><label class="lbl">Peralte h (m)</label><input class="inp" id="za-H" type="number" value="0.40" min=".05" step=".01" oninput="calc('za')"/></div>
+        <div class="fml">V = L × A × h</div>
+      </div>
+      <div class="card" id="cfg-za" style="padding:1.2rem"></div>
+      <div class="card" id="ace-za" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-za"></div><div id="dd-za" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-za" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-za" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+  <div id="sp-cim-zc" class="sp"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Zapata Combinada</div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Largo total L (m)</label><input class="inp" id="zc-L" type="number" value="3.00" min=".5" step=".1" oninput="calc('zc')"/></div>
+          <div><label class="lbl">Ancho A (m)</label><input class="inp" id="zc-A" type="number" value="1.50" min=".5" step=".05" oninput="calc('zc')"/></div>
+        </div>
+        <div style="margin-bottom:7px"><label class="lbl">Peralte h (m)</label><input class="inp" id="zc-H" type="number" value="0.50" min=".1" step=".01" oninput="calc('zc')"/></div>
+        <div class="g2c">
+          <div><label class="lbl">Nº columnas</label><select class="inp" id="zc-nc" onchange="calc('zc')"><option value="2">2 columnas</option><option value="3">3 columnas</option></select></div>
+          <div><label class="lbl">Dist. entre col. (m)</label><input class="inp" id="zc-d" type="number" value="2.00" min=".5" step=".1" oninput="calc('zc')"/></div>
+        </div>
+        <div class="fml">V = L × A × h</div>
+      </div>
+      <div class="card" id="cfg-zc" style="padding:1.2rem"></div>
+      <div class="card" id="ace-zc" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-zc"></div><div id="dd-zc" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-zc" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-zc" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+</div>
+
+<!-- ── VERTICAL ── -->
+<div id="tp-ver" class="tp">
+  <div class="ec-row">
+    <button class="ec on" onclick="sSub('ver','cr',this)">▬ Columna Rectangular</button>
+    <button class="ec" onclick="sSub('ver','cc',this)">● Columna Circular</button>
   </div>
-</header>
+  <div id="sp-ver-cr" class="sp on"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Columna Rectangular</div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Lado a (m)</label><input class="inp" id="cr-a" type="number" value="0.30" min=".1" step=".01" oninput="calc('cr')"/></div>
+          <div><label class="lbl">Lado b (m)</label><input class="inp" id="cr-b" type="number" value="0.30" min=".1" step=".01" oninput="calc('cr')"/></div>
+        </div>
+        <div style="margin-bottom:7px"><label class="lbl">Altura H (m)</label><input class="inp" id="cr-H" type="number" value="3.00" min=".5" step=".1" oninput="calc('cr')"/></div>
+        <div><label class="lbl">Cantidad (uds)</label><input class="inp" id="cr-n" type="number" value="1" min="1" step="1" oninput="calc('cr')"/></div>
+        <div class="fml">V = a × b × H × n</div>
+      </div>
+      <div class="card" id="cfg-cr" style="padding:1.2rem"></div>
+      <div class="card" id="ace-cr" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-cr"></div><div id="dd-cr" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-cr" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-cr" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+  <div id="sp-ver-cc" class="sp"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Columna Circular</div>
+        <div style="margin-bottom:7px"><label class="lbl">Diámetro D (m)</label><input class="inp" id="cc-d" type="number" value="0.40" min=".1" step=".01" oninput="calc('cc')"/></div>
+        <div style="margin-bottom:7px"><label class="lbl">Altura H (m)</label><input class="inp" id="cc-H" type="number" value="3.00" min=".5" step=".1" oninput="calc('cc')"/></div>
+        <div><label class="lbl">Cantidad (uds)</label><input class="inp" id="cc-n" type="number" value="1" min="1" step="1" oninput="calc('cc')"/></div>
+        <div class="fml">V = π × (D/2)² × H × n</div>
+      </div>
+      <div class="card" id="cfg-cc" style="padding:1.2rem"></div>
+      <div class="card" id="ace-cc" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-cc"></div><div id="dd-cc" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-cc" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-cc" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+</div>
 
-<style>
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-</style>
-
-<!-- ═══════════════════════ MAIN ═══════════════════════ -->
-<main class="z1 max-w-7xl mx-auto px-4 py-8">
-
-  <!-- Page title -->
-  <div style="margin-bottom:2rem">
-    <div class="sec-title" style="margin-bottom:.75rem">Ingeniería Civil · Cimentaciones y Superestructura</div>
-    <h1 style="font-family:'Rajdhani',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.01em;line-height:1.1">
-      Suite de Cálculo<br/>
-      <span class="t-blue">Estructural</span> <span style="color:var(--muted)">·</span> <span style="color:var(--neon-g)">NSR-10</span>
-    </h1>
-    <p style="color:var(--muted);font-size:.9rem;margin-top:.6rem;max-width:560px">
-      Dosificación técnica certificada · 6 elementos estructurales · Exportación directa a WhatsApp
-    </p>
+<!-- ── HORIZONTAL ── -->
+<div id="tp-hor" class="tp">
+  <div class="ec-row">
+    <button class="ec on" onclick="sSub('hor','vi',this)">━ Viga</button>
+    <button class="ec" onclick="sSub('hor','lm',this)">▦ Losa Maciza</button>
+    <button class="ec" onclick="sSub('hor','l1',this)">▤ Losa Alig. 1D</button>
+    <button class="ec" onclick="sSub('hor','l2',this)">⊞ Losa Reticular 2D</button>
   </div>
+  <!-- VIGA -->
+  <div id="sp-hor-vi" class="sp on"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Viga</div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Base b (m)</label><input class="inp" id="vi-b" type="number" value="0.30" min=".1" step=".01" oninput="calc('vi')"/></div>
+          <div><label class="lbl">Altura h (m)</label><input class="inp" id="vi-h" type="number" value="0.50" min=".1" step=".01" oninput="calc('vi')"/></div>
+        </div>
+        <div style="margin-bottom:7px"><label class="lbl">Longitud L (m)</label><input class="inp" id="vi-L" type="number" value="5.00" min=".5" step=".1" oninput="calc('vi')"/></div>
+        <div><label class="lbl">Cantidad (uds)</label><input class="inp" id="vi-n" type="number" value="1" min="1" step="1" oninput="calc('vi')"/></div>
+        <div class="fml">V = b × h × L × n</div>
+      </div>
+      <div class="card" id="cfg-vi" style="padding:1.2rem"></div>
+      <div class="card" id="ace-vi" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-vi"></div><div id="dd-vi" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-vi" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-vi" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+  <!-- LOSA MACIZA -->
+  <div id="sp-hor-lm" class="sp"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Losa Maciza</div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Largo L (m)</label><input class="inp" id="lm-L" type="number" value="5.00" min=".5" step=".1" oninput="calc('lm')"/></div>
+          <div><label class="lbl">Ancho A (m)</label><input class="inp" id="lm-A" type="number" value="4.00" min=".5" step=".1" oninput="calc('lm')"/></div>
+        </div>
+        <div><label class="lbl">Espesor e (m)</label><input class="inp" id="lm-e" type="number" value="0.12" min=".05" step=".01" oninput="calc('lm')"/></div>
+        <div class="fml">V = L × A × e</div>
+      </div>
+      <div class="card" id="cfg-lm" style="padding:1.2rem"></div>
+      <div class="card" id="ace-lm" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-lm"></div><div id="dd-lm" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-lm" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-lm" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+  <!-- LOSA ALIG 1D -->
+  <div id="sp-hor-l1" class="sp"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Losa Aligerada 1 Dirección</div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Largo L (m)</label><input class="inp" id="l1-L" type="number" value="5.00" min=".5" step=".1" oninput="calc('l1')"/></div>
+          <div><label class="lbl">Ancho A (m)</label><input class="inp" id="l1-A" type="number" value="4.00" min=".5" step=".1" oninput="calc('l1')"/></div>
+        </div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Espesor total e (m)</label><input class="inp" id="l1-e" type="number" value="0.20" min=".1" step=".01" oninput="calc('l1')"/></div>
+          <div><label class="lbl">Loseta superior (m)</label><input class="inp" id="l1-el" type="number" value="0.05" min=".02" step=".01" oninput="calc('l1')"/></div>
+        </div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Ancho nervio bv (m)</label><input class="inp" id="l1-bv" type="number" value="0.10" min=".05" step=".01" oninput="calc('l1')"/></div>
+          <div><label class="lbl">Paso eje-eje pv (m)</label><input class="inp" id="l1-pv" type="number" value="0.60" min=".2" step=".05" oninput="calc('l1')"/></div>
+        </div>
+        <div class="g2c">
+          <div><label class="lbl">Ancho casetón bc (m)</label><input class="inp" id="l1-bc" type="number" value="0.50" min=".1" step=".01" oninput="calc('l1')"/></div>
+          <div><label class="lbl">Alto casetón hc (m)</label><input class="inp" id="l1-hc" type="number" value="0.15" min=".05" step=".01" oninput="calc('l1')"/></div>
+        </div>
+        <div class="fml" style="font-size:.6rem">V_total − n_cas × (bc × hc × L)</div>
+      </div>
+      <div class="card" id="cfg-l1" style="padding:1.2rem"></div>
+      <div class="card" id="ace-l1" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-l1"></div><div id="dd-l1" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-l1" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-l1" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+  <!-- LOSA RETICULAR 2D -->
+  <div id="sp-hor-l2" class="sp"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Losa Reticular 2 Direcciones</div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Largo L (m)</label><input class="inp" id="l2-L" type="number" value="6.00" min="1" step=".1" oninput="calc('l2')"/></div>
+          <div><label class="lbl">Ancho A (m)</label><input class="inp" id="l2-A" type="number" value="6.00" min="1" step=".1" oninput="calc('l2')"/></div>
+        </div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Espesor total e (m)</label><input class="inp" id="l2-e" type="number" value="0.25" min=".1" step=".01" oninput="calc('l2')"/></div>
+          <div><label class="lbl">Loseta sup. el (m)</label><input class="inp" id="l2-el" type="number" value="0.05" min=".02" step=".01" oninput="calc('l2')"/></div>
+        </div>
+        <div style="background:var(--srf3);border-radius:7px;padding:.7rem;border:1px solid var(--brd2);margin-bottom:7px">
+          <div style="font-family:'Fira Code',monospace;font-size:.58rem;color:var(--c);margin-bottom:5px;letter-spacing:.1em">DIRECCIÓN X</div>
+          <div class="g2c">
+            <div><label class="lbl">Ancho nervio bx</label><input class="inp" id="l2-bx" type="number" value="0.12" min=".05" step=".01" oninput="calc('l2')"/></div>
+            <div><label class="lbl">Paso px (m)</label><input class="inp" id="l2-px" type="number" value="0.70" min=".2" step=".05" oninput="calc('l2')"/></div>
+          </div>
+        </div>
+        <div style="background:var(--srf3);border-radius:7px;padding:.7rem;border:1px solid var(--brd2);margin-bottom:7px">
+          <div style="font-family:'Fira Code',monospace;font-size:.58rem;color:var(--g);margin-bottom:5px;letter-spacing:.1em">DIRECCIÓN Y</div>
+          <div class="g2c">
+            <div><label class="lbl">Ancho nervio by</label><input class="inp" id="l2-by" type="number" value="0.12" min=".05" step=".01" oninput="calc('l2')"/></div>
+            <div><label class="lbl">Paso py (m)</label><input class="inp" id="l2-py" type="number" value="0.70" min=".2" step=".05" oninput="calc('l2')"/></div>
+          </div>
+        </div>
+        <div class="g2c">
+          <div><label class="lbl">Ancho cas. X (m)</label><input class="inp" id="l2-cx" type="number" value="0.58" min=".1" step=".01" oninput="calc('l2')"/></div>
+          <div><label class="lbl">Ancho cas. Y (m)</label><input class="inp" id="l2-cy" type="number" value="0.58" min=".1" step=".01" oninput="calc('l2')"/></div>
+        </div>
+        <div class="fml" style="font-size:.6rem">V_tot − Σ(cx × cy × (e−el))</div>
+      </div>
+      <div class="card" id="cfg-l2" style="padding:1.2rem"></div>
+      <div class="card" id="ace-l2" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-l2"></div><div id="dd-l2" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-l2" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-l2" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+</div>
 
-  <!-- ─── ELEMENT SELECTOR ─── -->
-  <div style="margin-bottom:1.5rem">
-    <div class="sec-title" style="margin-bottom:1rem">Seleccionar Elemento Estructural</div>
-    <div class="elem-nav" id="elemNav">
+<!-- ── CIRCULACIONES ── -->
+<div id="tp-cir" class="tp">
+  <div class="ec-row"><button class="ec on" onclick="sSub('cir','es',this)">↗ Escalera</button></div>
+  <div id="sp-cir-es" class="sp on"><div class="g3">
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem">
+        <div class="sh">Geometría · Escalera de Concreto</div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Nº peldaños</label><input class="inp" id="es-n" type="number" value="12" min="1" step="1" oninput="calc('es')"/></div>
+          <div><label class="lbl">Ancho a (m)</label><input class="inp" id="es-a" type="number" value="1.20" min=".5" step=".05" oninput="calc('es')"/></div>
+        </div>
+        <div class="g2c" style="margin-bottom:7px">
+          <div><label class="lbl">Huella H (m)</label><input class="inp" id="es-hu" type="number" value="0.28" min=".1" step=".01" oninput="calc('es')"/></div>
+          <div><label class="lbl">Contrahuella C (m)</label><input class="inp" id="es-co" type="number" value="0.18" min=".1" step=".01" oninput="calc('es')"/></div>
+        </div>
+        <div><label class="lbl">Espesor losa rampa e (m)</label><input class="inp" id="es-e" type="number" value="0.14" min=".08" step=".01" oninput="calc('es')"/></div>
+        <div class="fml" style="font-size:.6rem">V = √(ΣH²+ΣC²)·e·a + n·½·H·C·a</div>
+      </div>
+      <div class="card" id="cfg-es" style="padding:1.2rem"></div>
+      <div class="card" id="ace-es" style="padding:1.2rem"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.2rem"><div class="sh">Vista Técnica</div><div class="db" id="dg-es"></div><div id="dd-es" style="font-family:'Fira Code',monospace;font-size:.64rem;color:var(--txt2);text-align:center;margin-top:.5rem"></div></div>
+      <div class="card cg" id="vl-es" style="padding:1.2rem"></div>
+    </div>
+    <div id="rs-es" style="display:flex;flex-direction:column;gap:11px"></div>
+  </div></div>
+</div>
 
-      <button class="elem-btn active" data-elem="zapata" onclick="selectElem(this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="3" y="14" width="18" height="7" rx="1" fill="currentColor" opacity=".2"/>
-          <rect x="3" y="14" width="18" height="7" rx="1"/>
-          <rect x="7" y="8" width="10" height="6" rx="1"/>
-          <line x1="12" y1="3" x2="12" y2="8"/>
-        </svg>
-        Zapata
-      </button>
-
-      <button class="elem-btn" data-elem="viga" onclick="selectElem(this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="9" width="20" height="6" rx="1"/>
-          <line x1="2" y1="9" x2="2" y2="20"/><line x1="22" y1="9" x2="22" y2="20"/>
-        </svg>
-        Viga
-      </button>
-
-      <button class="elem-btn" data-elem="columna" onclick="selectElem(this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="8" y="2" width="8" height="20" rx="2"/>
-          <line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="18" x2="16" y2="18"/>
-        </svg>
-        Columna
-      </button>
-
-      <button class="elem-btn" data-elem="losa-maciza" onclick="selectElem(this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="8" width="20" height="8" rx="1"/>
-          <line x1="7" y1="8" x2="7" y2="16"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="17" y1="8" x2="17" y2="16"/>
-        </svg>
-        Losa Maciza
-      </button>
-
-      <button class="elem-btn" data-elem="losa-alig" onclick="selectElem(this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="6" width="20" height="12" rx="1"/>
-          <rect x="5" y="9" width="4" height="6" rx=".5" fill="currentColor" opacity=".3"/>
-          <rect x="10" y="9" width="4" height="6" rx=".5" fill="currentColor" opacity=".3"/>
-          <rect x="15" y="9" width="4" height="6" rx=".5" fill="currentColor" opacity=".3"/>
-        </svg>
-        Losa Alig.
-      </button>
-
-      <button class="elem-btn" data-elem="escalera" onclick="selectElem(this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <polyline points="3,20 3,15 8,15 8,10 13,10 13,5 20,5"/>
-          <line x1="3" y1="20" x2="20" y2="20"/>
-        </svg>
-        Escalera
-      </button>
-
+<!-- ── COSTOS APU ── -->
+<div id="tp-cos" class="tp">
+  <div class="g2" style="margin-bottom:13px">
+    <div class="card co" style="padding:1.4rem">
+      <div class="sh">Configuración de Precios (COP $)</div>
+      <div class="g2c">
+        <div><label class="lbl">Cemento / bulto 50kg</label><div class="pp"><span class="pfx">$</span><input class="inp" id="p-cem" type="number" value="32000" min="1" step="100" oninput="calcCos()"/></div></div>
+        <div><label class="lbl">Arena / m³</label><div class="pp"><span class="pfx">$</span><input class="inp" id="p-are" type="number" value="85000" min="1" step="1000" oninput="calcCos()"/></div></div>
+        <div><label class="lbl">Grava / m³</label><div class="pp"><span class="pfx">$</span><input class="inp" id="p-gra" type="number" value="95000" min="1" step="1000" oninput="calcCos()"/></div></div>
+        <div><label class="lbl">Acero / kg</label><div class="pp"><span class="pfx">$</span><input class="inp" id="p-ace" type="number" value="4500" min="1" step="100" oninput="calcCos()"/></div></div>
+      </div>
+      <div class="notice" style="margin-top:.9rem">ℹ️ Precios referencia mercado colombiano 2024-2025. No incluye MO, transporte ni AIU.</div>
+    </div>
+    <div class="card" style="padding:1.4rem">
+      <div class="sh">Desglose por Elemento</div>
+      <div id="cbd"></div>
     </div>
   </div>
+  <div class="ctot"><div style="font-family:'Barlow Condensed',sans-serif;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--txt2);margin-bottom:.4rem">Gran Total del Proyecto — Solo Materiales</div><div class="cn" id="gt">$ 0</div><div style="font-size:.68rem;color:var(--txt2);margin-top:.35rem">Sin MO · Sin AIU · Sin transporte</div></div>
+</div>
 
-  <!-- ─── MAIN GRID ─── -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:start" id="mainGrid">
-
-    <!-- LEFT: INPUTS COLUMN -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-
-      <!-- INPUTS PANEL by element -->
-      <div class="card card-neon-b" style="padding:1.5rem">
-        <div class="sec-title" style="margin-bottom:1.25rem">Parámetros del Elemento</div>
-
-        <!-- ZAPATA -->
-        <div id="panel-zapata" class="elem-panel active">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div><label class="lbl">Largo (m)</label><input class="inp" id="z-L" type="number" value="1.20" min=".1" step=".01" oninput="calc()"/></div>
-            <div><label class="lbl">Ancho (m)</label><input class="inp" id="z-A" type="number" value="1.20" min=".1" step=".01" oninput="calc()"/></div>
-          </div>
-          <div><label class="lbl">Peralte / Altura (m)</label><input class="inp" id="z-H" type="number" value="0.40" min=".05" step=".01" oninput="calc()"/></div>
-          <div class="formula" style="margin-top:10px">V = L × A × h</div>
-        </div>
-
-        <!-- VIGA -->
-        <div id="panel-viga" class="elem-panel">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div><label class="lbl">Base b (m)</label><input class="inp" id="vi-b" type="number" value="0.30" min=".1" step=".01" oninput="calc()"/></div>
-            <div><label class="lbl">Altura h (m)</label><input class="inp" id="vi-h" type="number" value="0.50" min=".1" step=".01" oninput="calc()"/></div>
-          </div>
-          <div><label class="lbl">Longitud total (m)</label><input class="inp" id="vi-L" type="number" value="5.00" min=".1" step=".1" oninput="calc()"/></div>
-          <div class="formula" style="margin-top:10px">V = b × h × L</div>
-        </div>
-
-        <!-- COLUMNA -->
-        <div id="panel-columna" class="elem-panel">
-          <div style="margin-bottom:10px">
-            <label class="lbl">Tipo de columna</label>
-            <select class="inp" id="col-tipo" onchange="toggleColType();calc()">
-              <option value="cuad">Cuadrada / Rectangular</option>
-              <option value="circ">Circular</option>
-            </select>
-          </div>
-          <div id="col-cuad-inputs">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-              <div><label class="lbl">Lado a (m)</label><input class="inp" id="col-a" type="number" value="0.30" min=".1" step=".01" oninput="calc()"/></div>
-              <div><label class="lbl">Lado b (m)</label><input class="inp" id="col-b" type="number" value="0.30" min=".1" step=".01" oninput="calc()"/></div>
-            </div>
-            <div class="formula">V = a × b × H</div>
-          </div>
-          <div id="col-circ-inputs" style="display:none">
-            <div style="margin-bottom:10px">
-              <label class="lbl">Diámetro D (m)</label>
-              <input class="inp" id="col-d" type="number" value="0.40" min=".1" step=".01" oninput="calc()"/>
-            </div>
-            <div class="formula">V = π × (D/2)² × H</div>
-          </div>
-          <div style="margin-top:10px"><label class="lbl">Altura H (m)</label><input class="inp" id="col-H" type="number" value="3.00" min=".5" step=".1" oninput="calc()"/></div>
-        </div>
-
-        <!-- LOSA MACIZA -->
-        <div id="panel-losa-maciza" class="elem-panel">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div><label class="lbl">Largo L (m)</label><input class="inp" id="lm-L" type="number" value="5.00" min=".5" step=".1" oninput="calc()"/></div>
-            <div><label class="lbl">Ancho A (m)</label><input class="inp" id="lm-A" type="number" value="4.00" min=".5" step=".1" oninput="calc()"/></div>
-          </div>
-          <div><label class="lbl">Espesor e (m)</label><input class="inp" id="lm-e" type="number" value="0.12" min=".05" step=".01" oninput="calc()"/></div>
-          <div class="formula" style="margin-top:10px">V = L × A × e</div>
-        </div>
-
-        <!-- LOSA ALIGERADA -->
-        <div id="panel-losa-alig" class="elem-panel">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div><label class="lbl">Largo L (m)</label><input class="inp" id="la-L" type="number" value="5.00" min=".5" step=".1" oninput="calc()"/></div>
-            <div><label class="lbl">Ancho A (m)</label><input class="inp" id="la-A" type="number" value="4.00" min=".5" step=".1" oninput="calc()"/></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div><label class="lbl">Espesor total (m)</label><input class="inp" id="la-e" type="number" value="0.20" min=".1" step=".01" oninput="calc()"/></div>
-            <div><label class="lbl">Espesor loseta (m)</label><input class="inp" id="la-el" type="number" value="0.05" min=".02" step=".01" oninput="calc()"/></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div><label class="lbl">Ancho nervio (m)</label><input class="inp" id="la-bn" type="number" value="0.10" min=".05" step=".01" oninput="calc()"/></div>
-            <div><label class="lbl">Dist. entre nervios (m)</label><input class="inp" id="la-dn" type="number" value="0.50" min=".1" step=".05" oninput="calc()"/></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div><label class="lbl">Ancho casetón (m)</label><input class="inp" id="la-bc" type="number" value="0.40" min=".1" step=".01" oninput="calc()"/></div>
-            <div><label class="lbl">Alto casetón (m)</label><input class="inp" id="la-hc" type="number" value="0.15" min=".05" step=".01" oninput="calc()"/></div>
-          </div>
-          <div class="formula" style="margin-top:10px;font-size:.72rem">V_total − V_casetones = V_concreto</div>
-        </div>
-
-        <!-- ESCALERA -->
-        <div id="panel-escalera" class="elem-panel">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div><label class="lbl">Nº peldaños</label><input class="inp" id="esc-n" type="number" value="12" min="1" step="1" oninput="calc()"/></div>
-            <div><label class="lbl">Ancho escalera (m)</label><input class="inp" id="esc-a" type="number" value="1.20" min=".5" step=".05" oninput="calc()"/></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div><label class="lbl">Huella (m)</label><input class="inp" id="esc-hu" type="number" value="0.28" min=".1" step=".01" oninput="calc()"/></div>
-            <div><label class="lbl">Contrahuella (m)</label><input class="inp" id="esc-co" type="number" value="0.18" min=".1" step=".01" oninput="calc()"/></div>
-          </div>
-          <div><label class="lbl">Espesor losa rampa (m)</label><input class="inp" id="esc-e" type="number" value="0.14" min=".08" step=".01" oninput="calc()"/></div>
-          <div class="formula" style="margin-top:10px;font-size:.72rem">V_rampa + V_peldaños</div>
-        </div>
-
-      </div><!-- end inputs card -->
-
-      <!-- CONFIG CONCRETO -->
-      <div class="card" style="padding:1.5rem">
-        <div class="sec-title" style="margin-bottom:1.25rem">Concreto · NSR-10</div>
-        <div style="margin-bottom:1rem">
-          <label class="lbl">Resistencia f'c</label>
-          <select class="inp" id="psi-sel" onchange="updateDos();calc()">
-            <option value="2500" selected>2,500 PSI — Uso general</option>
-            <option value="3000">3,000 PSI — Alta resistencia</option>
-            <option value="4000">4,000 PSI — Especial / sísmico</option>
-          </select>
-        </div>
-        <!-- Dosificación -->
-        <div id="dos-table"></div>
-        <div style="margin-top:1.25rem">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <label class="lbl" style="margin:0">Desperdicio sugerido NSR-10</label>
-            <span id="waste-lbl" style="font-family:'Share Tech Mono',monospace;font-size:.9rem;color:var(--neon-o)">5%</span>
-          </div>
-          <input type="range" id="waste-rng" min="3" max="12" step="1" value="5" oninput="updateWasteLabel();calc()"/>
-          <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted2);margin-top:3px">
-            <span>3% Min</span><span>7% Est.</span><span>12% Max</span>
-          </div>
-          <div id="waste-hint" style="font-size:.7rem;color:var(--muted);margin-top:6px;font-style:italic"></div>
+<!-- ── RESUMEN ── -->
+<div id="tp-res" class="tp">
+  <div class="g2">
+    <div class="card" style="padding:1.4rem">
+      <div class="sh">Inventario Total de Materiales</div>
+      <div id="inv"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="card cc" style="padding:1.4rem">
+        <div class="sh">Exportar Reporte Pro NSR-10</div>
+        <p style="font-size:.74rem;color:var(--txt2);margin-bottom:.9rem;line-height:1.55">Reporte técnico completo: dimensiones, volúmenes, cantidades, presupuesto y cumplimiento NSR-10.</p>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <button class="btn btn-wa" onclick="expWA()"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Enviar por WhatsApp</button>
+          <button class="btn btn-c" onclick="cpRep()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar Reporte</button>
+          <button class="btn btn-gh" onclick="resetAll()"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Resetear Todo</button>
         </div>
       </div>
-
-    </div><!-- end left col -->
-
-    <!-- CENTER: DIAGRAM + VOLUME -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-
-      <!-- SVG DIAGRAM -->
-      <div class="card card-neon-b" style="padding:1.5rem">
-        <div class="sec-title" style="margin-bottom:1rem">Representación Técnica</div>
-        <div class="diagram-box" id="diagramBox">
-          <!-- JS renders SVG here -->
-        </div>
-        <div id="diagram-dims" style="font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--muted);text-align:center;margin-top:.75rem"></div>
+      <div class="card" style="padding:1.1rem">
+        <div class="sh">Ficha NSR-10</div>
+        <div id="fns"></div>
       </div>
-
-      <!-- VOLUME SUMMARY CARD -->
-      <div class="card card-neon-g" style="padding:1.5rem">
-        <div class="sec-title" style="margin-bottom:1.1rem">Volúmenes de Concreto</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center">
-            <div class="lbl" style="margin-bottom:4px">Volumen Neto</div>
-            <div style="font-family:'Share Tech Mono',monospace;font-size:1.6rem;color:var(--neon-g)" id="vol-neto">0.000</div>
-            <div style="font-size:.72rem;color:var(--muted)">m³</div>
-          </div>
-          <div style="background:var(--bg2);border:1px solid rgba(0,212,255,.2);border-radius:10px;padding:1rem;text-align:center">
-            <div class="lbl" style="margin-bottom:4px">+ Desperdicio</div>
-            <div style="font-family:'Share Tech Mono',monospace;font-size:1.6rem;color:var(--neon-b)" id="vol-total">0.000</div>
-            <div style="font-size:.72rem;color:var(--muted)">m³</div>
-          </div>
-        </div>
-        <div style="margin-top:1rem;background:var(--bg2);border:1px solid rgba(255,159,0,.2);border-radius:10px;padding:.85rem;display:flex;justify-content:space-between;align-items:center">
-          <span class="lbl" style="margin:0">Sacos de Cemento (50 kg)</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:2rem;color:var(--neon-o)" id="sacos">0</span>
-        </div>
-        <!-- Area/Surface reference -->
-        <div id="surface-ref" style="margin-top:.75rem;font-size:.75rem;color:var(--muted);text-align:center"></div>
-      </div>
-
-      <!-- NSR note -->
-      <div class="notice">
-        <span>ℹ️</span>
-        <span>Dosificaciones según <strong style="color:var(--neon-b)">NSR-10 Título C</strong> y tablas ACI 318. Siempre contraste con el diseño estructural aprobado.</span>
-      </div>
-
-    </div><!-- end center col -->
-
-    <!-- RIGHT: RESULTS -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-
-      <div class="card" style="padding:1.5rem">
-        <div class="sec-title" style="margin-bottom:1.25rem">Materiales Requeridos</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-
-          <div class="res-card c-cem">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem">
-              <span class="lbl" style="margin:0;color:#6699ff">🏗 Cemento</span>
-              <span style="font-size:.7rem;background:rgba(0,212,255,.12);color:var(--neon-b);padding:2px 8px;border-radius:999px;font-family:'Share Tech Mono',monospace">kg</span>
-            </div>
-            <div class="res-val t-blue" id="r-cem">0.00</div>
-            <div style="font-size:.72rem;color:var(--muted);margin-top:2px" id="r-cem-sub">— sacos de 50 kg</div>
-            <div class="prog-wrap"><div class="prog-fill" id="pb-cem" style="background:var(--neon-b);width:0%"></div></div>
-          </div>
-
-          <div class="res-card c-are">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem">
-              <span class="lbl" style="margin:0;color:#f5c842">🏜 Arena</span>
-              <span style="font-size:.7rem;background:rgba(255,159,0,.12);color:var(--neon-o);padding:2px 8px;border-radius:999px;font-family:'Share Tech Mono',monospace">m³</span>
-            </div>
-            <div class="res-val t-orange" id="r-are">0.000</div>
-            <div style="font-size:.72rem;color:var(--muted);margin-top:2px" id="r-are-sub">— kg aprox.</div>
-            <div class="prog-wrap"><div class="prog-fill" id="pb-are" style="background:var(--neon-o);width:0%"></div></div>
-          </div>
-
-          <div class="res-card c-gra">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem">
-              <span class="lbl" style="margin:0;color:#00cc8a">🪨 Grava / Gravilla</span>
-              <span style="font-size:.7rem;background:rgba(0,255,159,.1);color:var(--neon-g);padding:2px 8px;border-radius:999px;font-family:'Share Tech Mono',monospace">m³</span>
-            </div>
-            <div class="res-val t-green" id="r-gra">0.000</div>
-            <div style="font-size:.72rem;color:var(--muted);margin-top:2px" id="r-gra-sub">— kg aprox.</div>
-            <div class="prog-wrap"><div class="prog-fill" id="pb-gra" style="background:var(--neon-g);width:0%"></div></div>
-          </div>
-
-          <div class="res-card c-agu">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem">
-              <span class="lbl" style="margin:0;color:#60c8ff">💧 Agua</span>
-              <span style="font-size:.7rem;background:rgba(96,200,255,.1);color:#60c8ff;padding:2px 8px;border-radius:999px;font-family:'Share Tech Mono',monospace">Litros</span>
-            </div>
-            <div class="res-val" style="color:#a8deff" id="r-agu">0.0</div>
-            <div style="font-size:.72rem;color:var(--muted);margin-top:2px">Relación a/c NSR-10</div>
-            <div class="prog-wrap"><div class="prog-fill" id="pb-agu" style="background:#60c8ff;width:0%"></div></div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Export -->
-      <div class="card" style="padding:1.5rem">
-        <div class="sec-title" style="margin-bottom:1rem">Exportar Reporte</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="btn btn-wa" onclick="goWhatsApp()">
-            <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Enviar por WhatsApp
-          </button>
-          <button class="btn btn-blue" onclick="copyReport()">
-            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-            Copiar Texto
-          </button>
-          <button class="btn btn-ghost" onclick="resetAll()">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-            Resetear Todo
-          </button>
-        </div>
-      </div>
-
-      <!-- Ficha técnica -->
-      <div class="card" style="padding:1.25rem">
-        <div class="sec-title" style="margin-bottom:.85rem">Ficha Técnica</div>
-        <div style="font-size:.75rem;display:flex;flex-direction:column;gap:5px" id="ficha">
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Norma:</span><span style="font-family:'Share Tech Mono',monospace">NSR-10 / ACI 318</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Elemento:</span><span style="font-family:'Share Tech Mono',monospace" id="ft-elem">Zapata Aislada</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">f'c:</span><span style="font-family:'Share Tech Mono',monospace" id="ft-psi">2,500 PSI</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Desperdicio:</span><span style="font-family:'Share Tech Mono',monospace" id="ft-waste">5%</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Vol. neto:</span><span style="font-family:'Share Tech Mono',monospace" id="ft-vol">0.000 m³</span></div>
-        </div>
-      </div>
-
-    </div><!-- end right col -->
-  </div><!-- end mainGrid -->
+    </div>
+  </div>
+</div>
 
 </main>
 
-<!-- ═══════════ FOOTER ═══════════ -->
-<footer class="z1" style="text-align:center;padding:2rem 1rem;margin-top:2rem;border-top:1px solid var(--border)">
-  <p style="font-family:'Rajdhani',sans-serif;font-size:.9rem;letter-spacing:.05em">
-    <span style="color:var(--neon-b)">Ing. Juan José Osorio</span>
-    <span style="color:var(--muted)"> — Soluciones Digitales</span>
+<footer class="z1" style="text-align:center;padding:1.5rem 1rem;margin-top:2rem;border-top:1px solid var(--brd)">
+  <p style="font-family:'Barlow Condensed',sans-serif;font-size:.88rem;font-weight:600;letter-spacing:.06em">
+    <span style="color:var(--c)">Ing. Juan José Osorio</span><span style="color:var(--txt2)"> — Soluciones Digitales</span>
   </p>
-  <p style="font-size:.7rem;color:var(--muted2);margin-top:4px">
-    NSR-10 · ACI 318 · Los valores son estimativos. Verifique con el diseño estructural aprobado.
-  </p>
+  <p style="font-family:'Fira Code',monospace;font-size:.58rem;color:var(--txt3);margin-top:4px">NSR-10 / ACI 318 · Valores estimativos · Verificar con diseño estructural aprobado</p>
 </footer>
-
 <div id="toast"></div>
 
-<!-- ═══════════ JS ═══════════ -->
 <script>
-// ─── DATABASE NSR-10 ───────────────────────────────────────────────────────
-const DOS = {
-  2500: { cem:350, are:0.70, gra:0.90, agu:195, label:'2,500 PSI', mpa:'17.2 MPa' },
-  3000: { cem:400, are:0.65, gra:0.85, agu:205, label:'3,000 PSI', mpa:'20.7 MPa' },
-  4000: { cem:470, are:0.58, gra:0.78, agu:215, label:'4,000 PSI', mpa:'27.6 MPa' },
+// ══ DATABASE ══
+const DOS={
+  2500:{cem:350,are:0.70,gra:0.90,agu:195,lbl:'2,500 PSI',mpa:'17.2 MPa',wc:'0.56'},
+  3000:{cem:400,are:0.65,gra:0.85,agu:205,lbl:'3,000 PSI',mpa:'20.7 MPa',wc:'0.49'},
+  4000:{cem:470,are:0.58,gra:0.78,agu:215,lbl:'4,000 PSI',mpa:'27.6 MPa',wc:'0.41'},
 };
-
-const ELEM_INFO = {
-  'zapata':     { name:'Zapata Aislada',          waste:5,  nsr:'NSR-10 C.15',  wasteHint:'5% para concreto en zapatas aisladas' },
-  'viga':       { name:'Viga de Amarre/Carga',    waste:5,  nsr:'NSR-10 C.21',  wasteHint:'5% para vigas de concreto reforzado' },
-  'columna':    { name:'Columna Estructural',     waste:5,  nsr:'NSR-10 C.22',  wasteHint:'5% para columnas con formaleta' },
-  'losa-maciza':{ name:'Losa Maciza',             waste:8,  nsr:'NSR-10 C.9',   wasteHint:'8% para losas (mayor área de vertido)' },
-  'losa-alig':  { name:'Losa Aligerada (1 sent)', waste:10, nsr:'NSR-10 C.9.8', wasteHint:'10% por complejidad de casetones' },
-  'escalera':   { name:'Escalera de Concreto',    waste:7,  nsr:'NSR-10 C.24',  wasteHint:'7% por geometría en peldaños' },
+const WD={za:5,zc:5,cr:5,cc:5,vi:5,lm:8,l1:10,l2:12,es:7};
+const SQ={baja:60,media:100,alta:150};
+const META={
+  za:{name:'Zapata Aislada',nsr:'NSR-10 §C.15'},
+  zc:{name:'Zapata Combinada',nsr:'NSR-10 §C.15'},
+  cr:{name:'Columna Rectangular',nsr:'NSR-10 §C.22'},
+  cc:{name:'Columna Circular',nsr:'NSR-10 §C.22'},
+  vi:{name:'Viga de Amarre / Carga',nsr:'NSR-10 §C.21'},
+  lm:{name:'Losa Maciza',nsr:'NSR-10 §C.9'},
+  l1:{name:'Losa Aligerada 1D',nsr:'NSR-10 §C.9.8'},
+  l2:{name:'Losa Reticular 2D',nsr:'NSR-10 §C.9.9'},
+  es:{name:'Escalera de Concreto',nsr:'NSR-10 §C.24'},
 };
+const ST={};
 
-let currentElem = 'zapata';
-
-// ─── SELECT ELEMENT ────────────────────────────────────────────────────────
-function selectElem(btn) {
-  document.querySelectorAll('.elem-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentElem = btn.dataset.elem;
-  document.querySelectorAll('.elem-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + currentElem).classList.add('active');
-  const info = ELEM_INFO[currentElem];
-  document.getElementById('waste-rng').value = info.waste;
-  updateWasteLabel();
-  updateDos();
-  calc();
-  document.getElementById('ft-elem').textContent = info.name;
+// ══ NAV ══
+function sTab(n,btn){
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tp-'+n).classList.add('on');
+  btn.classList.add('on');
+  if(n==='cos')calcCos();
+  if(n==='res')refreshRes();
+}
+function sSub(tab,n,btn){
+  document.querySelectorAll('#tp-'+tab+' .sp').forEach(p=>p.classList.remove('on'));
+  document.getElementById('sp-'+tab+'-'+n).classList.add('on');
+  document.querySelectorAll('#tp-'+tab+' .ec').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
 }
 
-function toggleColType() {
-  const t = document.getElementById('col-tipo').value;
-  document.getElementById('col-cuad-inputs').style.display = t==='cuad'?'block':'none';
-  document.getElementById('col-circ-inputs').style.display = t==='circ'?'block':'none';
+// ══ RENDER CONFIG ══
+function renderCfg(k){
+  const w=WD[k];
+  const opts=[2500,3000,4000].map(p=>`<option value="${p}"${p===2500?' selected':''}>${DOS[p].lbl}</option>`).join('');
+  document.getElementById('cfg-'+k).innerHTML=`
+    <div class="sh">Concreto · NSR-10</div>
+    <div style="margin-bottom:.8rem"><label class="lbl">Resistencia f'c</label>
+    <select class="inp" id="${k}-psi" onchange="calc('${k}');">${opts}</select></div>
+    <div id="${k}-dt"></div>
+    <div style="margin-top:.8rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <label class="lbl" style="margin:0">Desperdicio NSR-10</label>
+        <span id="${k}-wl" style="font-family:'Fira Code',monospace;font-size:.8rem;color:var(--o)">${w}%</span>
+      </div>
+      <input type="range" id="${k}-wr" min="3" max="15" step="1" value="${w}"
+        oninput="document.getElementById('${k}-wl').textContent=this.value+'%';calc('${k}')"/>
+      <div style="display:flex;justify-content:space-between;font-size:.58rem;color:var(--txt3);margin-top:3px">
+        <span>3%</span><span>10%</span><span>15%</span>
+      </div>
+    </div>`;
+  updDT(k);
+}
+function updDT(k){
+  const psi=parseInt(document.getElementById(k+'-psi')?.value)||2500;
+  const d=DOS[psi];
+  const el=document.getElementById(k+'-dt');
+  if(!el)return;
+  el.innerHTML=[['Cemento','var(--c)',d.cem+' kg/m³'],['Arena','var(--o)',d.are+' m³/m³'],
+    ['Grava','var(--g)',d.gra+' m³/m³'],['Agua','#60c8ff',d.agu+' L/m³'],['R a/c','var(--v)',d.wc]]
+    .map(r=>`<div class="tr"><span style="color:var(--txt2);font-size:.73rem">${r[0]}</span>
+    <span class="tv" style="color:${r[1]};font-size:.68rem">${r[2]}</span></div>`).join('');
+}
+function renderAce(k){
+  document.getElementById('ace-'+k).innerHTML=`
+    <div class="sh">Estimación Acero Refuerzo</div>
+    <div class="qrow">
+      <button class="qb on" id="${k}-qb-baja" onclick="setQ('${k}','baja')">Baja<br/><span style="font-size:.58rem;opacity:.7">60 kg/m³</span></button>
+      <button class="qb" id="${k}-qb-media" onclick="setQ('${k}','media')">Media<br/><span style="font-size:.58rem;opacity:.7">100 kg/m³</span></button>
+      <button class="qb" id="${k}-qb-alta" onclick="setQ('${k}','alta')">Alta<br/><span style="font-size:.58rem;opacity:.7">150 kg/m³</span></button>
+    </div>
+    <div><label class="lbl">Manual kg/m³</label>
+    <input class="inp" type="number" id="${k}-qm" placeholder="ej: 120" oninput="calc('${k}')" min="20" max="300" step="5"/></div>
+    <div id="${k}-qr" style="margin-top:.6rem"></div>`;
+}
+function setQ(k,niv){
+  ['baja','media','alta'].forEach(n=>{const b=document.getElementById(`${k}-qb-${n}`);if(b)b.classList.toggle('on',n===niv);});
+  const m=document.getElementById(k+'-qm');if(m)m.value='';
+  calc(k);
+}
+function getQ(k){
+  const m=parseFloat(document.getElementById(k+'-qm')?.value);if(m>0)return m;
+  const b=document.querySelector(`#ace-${k} .qb.on`);
+  if(!b)return SQ.baja;
+  if(b.id.includes('media'))return SQ.media;
+  if(b.id.includes('alta'))return SQ.alta;
+  return SQ.baja;
 }
 
-// ─── DOSIFICACIÓN TABLE ────────────────────────────────────────────────────
-function updateDos() {
-  const psi = parseInt(document.getElementById('psi-sel').value);
-  const d   = DOS[psi];
-  document.getElementById('ft-psi').textContent = d.label;
-  const rows = [
-    ['🏗 Cemento', d.cem + ' kg'],
-    ['🏜 Arena',   d.are + ' m³'],
-    ['🪨 Grava',   d.gra + ' m³'],
-    ['💧 Agua',    d.agu + ' L'],
-  ];
-  document.getElementById('dos-table').innerHTML =
-    '<div style="font-size:.7rem;color:var(--muted);margin-bottom:.5rem">Por m³ de concreto</div>' +
-    rows.map(r => `<div class="dos-row"><span style="color:var(--muted)">${r[0]}</span><span class="dos-val">${r[1]}</span></div>`).join('');
+// ══ RENDER VOL ══
+function renderVol(k,vn,vt){
+  const el=document.getElementById('vl-'+k);if(!el)return;
+  el.innerHTML=`<div class="sh">Volúmenes</div>
+  <div class="g2c">
+    <div style="background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:.7rem;text-align:center">
+      <div class="lbl" style="margin-bottom:2px">Neto</div>
+      <div style="font-family:'Fira Code',monospace;font-size:1.3rem;color:var(--g)">${vn.toFixed(3)}</div>
+      <div style="font-size:.6rem;color:var(--txt2)">m³</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid rgba(0,200,255,.2);border-radius:8px;padding:.7rem;text-align:center">
+      <div class="lbl" style="margin-bottom:2px">+ Desp.</div>
+      <div style="font-family:'Fira Code',monospace;font-size:1.3rem;color:var(--c)">${vt.toFixed(3)}</div>
+      <div style="font-size:.6rem;color:var(--txt2)">m³</div>
+    </div>
+  </div>`;
 }
 
-function updateWasteLabel() {
-  const v = document.getElementById('waste-rng').value;
-  document.getElementById('waste-lbl').textContent = v + '%';
-  document.getElementById('ft-waste').textContent  = v + '%';
-  const hint = ELEM_INFO[currentElem]?.wasteHint || '';
-  document.getElementById('waste-hint').textContent = hint;
+// ══ RENDER RESULTS ══
+function renderRes(k,cem,are,gra,agu,ace,cost){
+  const sac=Math.ceil(cem/50);
+  document.getElementById('rs-'+k).innerHTML=`
+    <div class="card" style="padding:1.1rem">
+      <div class="sh">Materiales Requeridos</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        ${rcard('rc-c','var(--c)','🏗 Cemento','kg',cem.toFixed(1),`${sac} sacos × 50kg`,cem,1200)}
+        ${rcard('rc-o','var(--o)','🏜 Arena','m³',are.toFixed(3),`≈${(are*1600).toFixed(0)}kg`,are,3)}
+        ${rcard('rc-g','var(--g)','🪨 Grava','m³',gra.toFixed(3),`≈${(gra*1500).toFixed(0)}kg`,gra,4)}
+        ${rcard('rc-b','#60c8ff','💧 Agua','L',agu.toFixed(1),'Rel. a/c NSR-10',agu,700)}
+        ${rcard('rc-v','var(--v)','⚙️ Acero est.','kg',ace.toFixed(1),'Armadura refuerzo',ace,2000)}
+      </div>
+    </div>
+    <div class="card co" style="padding:1.1rem">
+      <div class="sh" style="margin-bottom:.5rem">Costo Estimado</div>
+      <div style="font-family:'Fira Code',monospace;font-size:1.45rem;color:var(--o);animation:pop .3s ease">${cop(cost)}</div>
+      <div style="font-size:.62rem;color:var(--txt2);margin-top:2px">Solo materiales · Sin MO ni AIU</div>
+    </div>
+    <div class="card" style="padding:.9rem">
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-wa" style="font-size:.7rem;padding:.45rem .9rem" onclick="shareK('${k}')">
+          <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>WA
+        </button>
+        <button class="btn btn-c" style="font-size:.7rem;padding:.45rem .9rem" onclick="copyK('${k}')">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar
+        </button>
+      </div>
+    </div>`;
+}
+function rcard(cls,col,lbl,unit,val,sub,v,max){
+  const pct=Math.min(v/max*100,100).toFixed(1);
+  return `<div class="rc ${cls}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px">
+      <span style="font-family:'Fira Code',monospace;font-size:.57rem;color:${col};letter-spacing:.1em;text-transform:uppercase">${lbl}</span>
+      <span style="font-size:.57rem;background:${col}1a;color:${col};padding:1px 6px;border-radius:999px;font-family:'Fira Code',monospace">${unit}</span>
+    </div>
+    <div class="rn" style="color:${col}">${val}</div>
+    <div style="font-size:.63rem;color:var(--txt2);margin-top:1px">${sub}</div>
+    <div class="bw"><div class="bf" style="background:${col};width:${pct}%"></div></div>
+  </div>`;
 }
 
-// ─── VOLUME CALCULATORS ────────────────────────────────────────────────────
-function getVol() {
-  let vol = 0, extra = {};
-  const g = id => parseFloat(document.getElementById(id)?.value) || 0;
-
-  switch(currentElem) {
-    case 'zapata': {
-      const L=g('z-L'),A=g('z-A'),H=g('z-H');
-      vol=L*A*H; extra={dims:`${L}×${A}×${H} m`};
-      break;
+// ══ VOLUME CALCS ══
+function gv(id){return parseFloat(document.getElementById(id)?.value)||0;}
+function calcVol(k){
+  let v=0,dims='';
+  switch(k){
+    case'za':{const L=gv('za-L'),A=gv('za-A'),H=gv('za-H');v=L*A*H;dims=`${L}×${A}×${H}m`;drawZap('dg-za',L,A,H,'ais');break;}
+    case'zc':{const L=gv('zc-L'),A=gv('zc-A'),H=gv('zc-H');v=L*A*H;dims=`${L}×${A}×${H}m`;drawZap('dg-zc',L,A,H,'com');break;}
+    case'cr':{const a=gv('cr-a'),b=gv('cr-b'),H=gv('cr-H'),n=gv('cr-n')||1;v=a*b*H*n;dims=`${a}×${b}×${H}m · n=${n}`;drawColR('dg-cr',a,b,H);break;}
+    case'cc':{const D=gv('cc-d'),H=gv('cc-H'),n=gv('cc-n')||1;v=Math.PI*(D/2)*(D/2)*H*n;dims=`D=${D} H=${H}m · n=${n}`;drawColC('dg-cc',D,H);break;}
+    case'vi':{const b=gv('vi-b'),h=gv('vi-h'),L=gv('vi-L'),n=gv('vi-n')||1;v=b*h*L*n;dims=`b=${b} h=${h} L=${L}m·n=${n}`;drawViga('dg-vi',b,h,L);break;}
+    case'lm':{const L=gv('lm-L'),A=gv('lm-A'),e=gv('lm-e');v=L*A*e;dims=`${L}×${A}×e=${e}m`;drawLosaMac('dg-lm',L,A,e);break;}
+    case'l1':{
+      const L=gv('l1-L'),A=gv('l1-A'),e=gv('l1-e');
+      const bv=gv('l1-bv'),pv=gv('l1-pv'),bc=gv('l1-bc'),hc=gv('l1-hc');
+      const vT=L*A*e;
+      const nN=Math.max(1,Math.round(A/pv));
+      const nC=Math.max(0,nN-1);
+      v=Math.max(0.001,vT-nC*bc*hc*L);
+      dims=`${L}×${A}×e=${e}m · ~${nC} casetones`;
+      drawL1('dg-l1',L,A,e,nC);break;
     }
-    case 'viga': {
-      const b=g('vi-b'),h=g('vi-h'),L=g('vi-L');
-      vol=b*h*L; extra={dims:`b=${b} h=${h} L=${L} m`};
-      break;
+    case'l2':{
+      const L=gv('l2-L'),A=gv('l2-A'),e=gv('l2-e'),el=gv('l2-el');
+      const bx=gv('l2-bx'),px=gv('l2-px'),by=gv('l2-by'),py=gv('l2-py');
+      const cx=gv('l2-cx'),cy=gv('l2-cy');
+      const hc=e-el;
+      const vT=L*A*e;
+      const nCx=Math.max(1,Math.round(L/px)-1),nCy=Math.max(1,Math.round(A/py)-1);
+      const nC=nCx*nCy;
+      v=Math.max(0.001,vT-nC*cx*cy*hc);
+      dims=`${L}×${A}×e=${e}m · ${nCx}×${nCy} cas.`;
+      drawL2('dg-l2',L,A,e,nCx,nCy);break;
     }
-    case 'columna': {
-      const tipo=document.getElementById('col-tipo').value;
-      const H=g('col-H');
-      if(tipo==='cuad'){ const a=g('col-a'),b=g('col-b'); vol=a*b*H; extra={dims:`${a}×${b}×${H} m`}; }
-      else { const d=g('col-d'); vol=Math.PI*(d/2)*(d/2)*H; extra={dims:`D=${d} H=${H} m`}; }
-      break;
-    }
-    case 'losa-maciza': {
-      const L=g('lm-L'),A=g('lm-A'),e=g('lm-e');
-      vol=L*A*e; extra={dims:`${L}×${A}×${e} m`, area:L*A};
-      break;
-    }
-    case 'losa-alig': {
-      const L=g('la-L'),A=g('la-A'),e=g('la-e'),el=g('la-el');
-      const bn=g('la-bn'),dn=g('la-dn'),bc=g('la-bc'),hc=g('la-hc');
-      const vTotal = L*A*e;
-      const areaCasetones = L*A;
-      const paso = bn + dn; // paso entre nervios
-      const nCasetones = Math.floor(L / paso) * Math.floor(A / paso);
-      const vCaseton = bc * hc * Math.min(dn, bc);
-      const vLoseta  = L * A * el;
-      const vNervios = vTotal - (nCasetones * vCaseton) - vLoseta;
-      vol = vLoseta + Math.max(0, vNervios);
-      // recalculate properly
-      const nNervX = Math.max(1, Math.round(L / paso));
-      const nNervY = 1; // one-way slab
-      const vAliv = nCasetones * bc * hc * dn; // approximate void
-      vol = Math.max(0.01, vTotal - Math.min(vAliv, vTotal * 0.5));
-      extra = {dims:`${L}×${A}×${e} m`, area:L*A, nCasetones};
-      break;
-    }
-    case 'escalera': {
-      const n=g('esc-n'),a=g('esc-a'),hu=g('esc-hu'),co=g('esc-co'),e=g('esc-e');
-      const longHoriz = n * hu;
-      const longVert  = n * co;
-      const hipot     = Math.sqrt(longHoriz*longHoriz + longVert*longVert);
-      const vRampa    = hipot * e * a;
-      const vPeld     = n * 0.5 * hu * co * a;
-      vol = vRampa + vPeld;
-      extra = {dims:`${n} peldaños ${hu}×${co} m, a=${a} m`};
-      break;
+    case'es':{
+      const n=gv('es-n'),a=gv('es-a'),hu=gv('es-hu'),co=gv('es-co'),e=gv('es-e');
+      const lH=n*hu,lV=n*co;
+      const hip=Math.sqrt(lH*lH+lV*lV);
+      v=hip*e*a+n*0.5*hu*co*a;
+      dims=`${n}peld. hu=${hu} co=${co}m a=${a}m`;
+      drawEsc('dg-es',n,hu,co);break;
     }
   }
-  return { vol: Math.max(0, vol), extra };
+  return{v:Math.max(0,v),dims};
 }
 
-// ─── MAIN CALC ─────────────────────────────────────────────────────────────
-function calc() {
-  const psi   = parseInt(document.getElementById('psi-sel').value);
-  const waste = parseInt(document.getElementById('waste-rng').value) / 100;
-  const d     = DOS[psi];
-  const { vol, extra } = getVol();
-  const vt = vol * (1 + waste);
-
-  // Materiales
-  const cem = d.cem * vt;
-  const are = d.are * vt;
-  const gra = d.gra * vt;
-  const agu = d.agu * vt;
-  const sac = Math.ceil(cem / 50);
-
-  // Refs para barras (maximos reales)
-  const maxCem=1500, maxAre=3, maxGra=4, maxAgu=800;
-
-  setText('vol-neto', vol.toFixed(3));
-  setText('vol-total', vt.toFixed(3));
-  setText('sacos', sac);
-  setText('ft-vol', vol.toFixed(3) + ' m³');
-
-  setRes('cem', cem.toFixed(1), `${sac} sacos de 50 kg`, Math.min(cem/maxCem*100,100));
-  setRes('are', are.toFixed(3), `≈ ${(are*1600).toFixed(0)} kg`, Math.min(are/maxAre*100,100));
-  setRes('gra', gra.toFixed(3), `≈ ${(gra*1500).toFixed(0)} kg`, Math.min(gra/maxGra*100,100));
-  setRes('agu', agu.toFixed(1), 'Relación a/c certificada', Math.min(agu/maxAgu*100,100));
-
-  // Surface ref
-  const sr = document.getElementById('surface-ref');
-  if(extra.area) sr.textContent = `Área de losa: ${extra.area.toFixed(2)} m²`;
-  else sr.textContent = '';
-
-  updateDiagram(extra);
+// ══ MAIN CALC ══
+function calc(k){
+  updDT(k);
+  const psi=parseInt(document.getElementById(k+'-psi')?.value)||2500;
+  const w=parseInt(document.getElementById(k+'-wr')?.value)||WD[k];
+  const d=DOS[psi];
+  const qkg=getQ(k);
+  const{v,dims}=calcVol(k);
+  const vt=v*(1+w/100);
+  const cem=d.cem*vt,are=d.are*vt,gra=d.gra*vt,agu=d.agu*vt,ace=qkg*vt;
+  const sac=Math.ceil(cem/50);
+  // prices
+  const pC=parseFloat(document.getElementById('p-cem')?.value)||32000;
+  const pA=parseFloat(document.getElementById('p-are')?.value)||85000;
+  const pG=parseFloat(document.getElementById('p-gra')?.value)||95000;
+  const pAc=parseFloat(document.getElementById('p-ace')?.value)||4500;
+  const cost=sac*pC+are*pA+gra*pG+ace*pAc;
+  ST[k]={k,v,vt,cem,are,gra,agu,ace,cost,psi,w,dims,sac,name:META[k].name,nsr:META[k].nsr};
+  const qr=document.getElementById(k+'-qr');
+  if(qr)qr.innerHTML=`<div class="tr"><span style="color:var(--txt2);font-size:.7rem">⚙️ Acero est.</span><span class="tv" style="color:var(--v)">${ace.toFixed(1)} kg</span></div>`;
+  renderVol(k,v,vt);
+  renderRes(k,cem,are,gra,agu,ace,cost);
+  const dd=document.getElementById('dd-'+k);if(dd)dd.textContent=dims;
 }
 
-function setText(id, v) {
-  const el = document.getElementById(id);
-  if(el){ el.textContent = v; el.style.animation='none'; el.offsetHeight; el.style.animation='fadeUp .35s ease'; }
+// ══ SVG DIAGRAMS ══
+const C='rgba(0,200,255,.72)',CF='rgba(0,200,255,.07)',G='rgba(0,232,150,.65)',GF='rgba(0,232,150,.07)',
+      O='rgba(255,184,0,.78)',OF='rgba(255,184,0,.07)',W='rgba(216,224,245,.2)',
+      DM='fill:rgba(0,200,255,.65);font-family:Fira Code,monospace;font-size:9px',
+      LB='fill:rgba(216,224,245,.3);font-family:Fira Code,monospace;font-size:8.5px';
+
+function inj(id,html){const e=document.getElementById(id);if(e)e.innerHTML=html;}
+
+function drawZap(id,L,A,H,t){
+  const nc=t==='com'?2:1;
+  inj(id,`<svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" width="200" height="165">
+    <rect x="15" y="112" width="190" height="52" rx="2" style="fill:${CF};stroke:${C};stroke-width:1.5"/>
+    ${nc===1?`<rect x="83" y="60" width="54" height="52" rx="1" style="fill:${GF};stroke:${G};stroke-width:1.5"/>
+    <line x1="110" y1="18" x2="110" y2="60" style="stroke:${O};stroke-width:3"/>`:
+    `<rect x="35" y="60" width="40" height="52" rx="1" style="fill:${GF};stroke:${G};stroke-width:1.5"/>
+    <rect x="145" y="60" width="40" height="52" rx="1" style="fill:${GF};stroke:${G};stroke-width:1.5"/>
+    <line x1="55" y1="18" x2="55" y2="60" style="stroke:${O};stroke-width:2.5"/>
+    <line x1="165" y1="18" x2="165" y2="60" style="stroke:${O};stroke-width:2.5"/>`}
+    <line x1="5" y1="164" x2="215" y2="164" style="stroke:${W};stroke-width:6"/>
+    <line x1="25" y1="140" x2="195" y2="140" style="stroke:${O};stroke-width:.9;stroke-dasharray:4,3"/>
+    <line x1="25" y1="153" x2="195" y2="153" style="stroke:${O};stroke-width:.9;stroke-dasharray:4,3"/>
+    <line x1="5" y1="112" x2="5" y2="164" style="stroke:${C};stroke-width:.8"/>
+    <text x="-14" y="142" style="${DM}" transform="rotate(-90,-2,140)">h=${H}m</text>
+    <line x1="15" y1="102" x2="205" y2="102" style="stroke:${C};stroke-width:.8"/>
+    <text x="82" y="98" style="${DM}">← L=${L}m →</text>
+    <text x="50" y="178" style="${LB}">${t==='com'?'Zapata Combinada':'Zapata Aislada'}</text>
+  </svg>`);
+}
+function drawColR(id,a,b,H){
+  inj(id,`<svg viewBox="0 0 175 195" xmlns="http://www.w3.org/2000/svg" width="160" height="180">
+    <rect x="48" y="15" width="80" height="158" rx="2" style="fill:${CF};stroke:${C};stroke-width:1.5"/>
+    ${[28,62,98,132,154].map(y=>`<rect x="53" y="${y}" width="70" height="12" style="fill:none;stroke:${O};stroke-width:.9;opacity:.55"/>`).join('')}
+    ${[[55,20],[122,20],[55,168],[122,168]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4.5" style="fill:${O};opacity:.8"/>`).join('')}
+    <line x1="36" y1="15" x2="36" y2="173" style="stroke:${C};stroke-width:.8"/>
+    <text x="16" y="97" style="${DM}" transform="rotate(-90,22,95)">H=${H}m</text>
+    <line x1="48" y1="6" x2="128" y2="6" style="stroke:${C};stroke-width:.8"/>
+    <text x="64" y="4" style="${DM}">a=${a}m</text>
+    <text x="60" y="190" style="${LB}">Col. Rectangular</text>
+  </svg>`);
+}
+function drawColC(id,D,H){
+  inj(id,`<svg viewBox="0 0 175 195" xmlns="http://www.w3.org/2000/svg" width="160" height="180">
+    <ellipse cx="88" cy="26" rx="42" ry="10" style="fill:${CF};stroke:${C};stroke-width:1.5"/>
+    <rect x="46" y="26" width="84" height="146" style="fill:${CF};stroke:none"/>
+    <ellipse cx="88" cy="172" rx="42" ry="10" style="fill:${CF};stroke:${C};stroke-width:1.5"/>
+    <line x1="46" y1="26" x2="46" y2="172" style="stroke:${C};stroke-width:1.5"/>
+    <line x1="130" y1="26" x2="130" y2="172" style="stroke:${C};stroke-width:1.5"/>
+    ${[0,60,120,180,240,300].map(a=>`<circle cx="${88+35*Math.cos(a*Math.PI/180)}" cy="172" r="4" style="fill:${O};opacity:.8"/>`).join('')}
+    ${[60,100,138].map(y=>`<ellipse cx="88" cy="${y}" rx="42" ry="7" style="fill:none;stroke:${O};stroke-width:.8;opacity:.45"/>`).join('')}
+    <line x1="46" y1="8" x2="130" y2="8" style="stroke:${C};stroke-width:.8"/>
+    <text x="65" y="6" style="${DM}">D=${D}m</text>
+    <line x1="34" y1="26" x2="34" y2="172" style="stroke:${C};stroke-width:.8"/>
+    <text x="14" y="102" style="${DM}" transform="rotate(-90,20,100)">H=${H}m</text>
+    <text x="60" y="190" style="${LB}">Col. Circular</text>
+  </svg>`);
+}
+function drawViga(id,b,h,L){
+  inj(id,`<svg viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg" width="220" height="135">
+    <rect x="8" y="42" width="224" height="74" rx="2" style="fill:${CF};stroke:${C};stroke-width:1.5"/>
+    ${[[20,52],[36,52],[204,52],[220,52],[20,108],[220,108]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" style="fill:${O};opacity:.82"/>`).join('')}
+    ${[32,68,105,148,182].map(x=>`<rect x="${x}" y="47" width="11" height="64" style="fill:none;stroke:${O};stroke-width:.9;opacity:.5"/>`).join('')}
+    <rect x="3" y="116" width="24" height="14" rx="1" style="fill:${CF};stroke:${C};stroke-width:1"/>
+    <rect x="213" y="116" width="24" height="14" rx="1" style="fill:${CF};stroke:${C};stroke-width:1"/>
+    <line x1="8" y1="138" x2="232" y2="138" style="stroke:${C};stroke-width:.8"/>
+    <text x="93" y="148" style="${DM}">L = ${L}m</text>
+    <line x1="238" y1="42" x2="238" y2="116" style="stroke:${C};stroke-width:.8"/>
+    <text x="220" y="83" style="${DM}" transform="rotate(90,230,82)">h=${h}m</text>
+    <text x="88" y="88" style="${LB}">Viga b=${b}m</text>
+  </svg>`);
+}
+function drawLosaMac(id,L,A,e){
+  inj(id,`<svg viewBox="0 0 240 162" xmlns="http://www.w3.org/2000/svg" width="220" height="148">
+    <polygon points="22,32 202,32 222,57 42,57" style="fill:${GF};stroke:${G};stroke-width:1.5"/>
+    <polygon points="22,32 42,57 42,102 22,77" style="fill:rgba(0,232,150,.04);stroke:${G};stroke-width:1.2"/>
+    <polygon points="202,32 222,57 222,102 202,77" style="fill:rgba(0,232,150,.04);stroke:${G};stroke-width:1"/>
+    <polygon points="22,77 42,102 222,102 202,77" style="fill:${GF};stroke:${G};stroke-width:1"/>
+    ${[55,85,115,155,180].map(x=>`<line x1="${x}" y1="36" x2="${x+18}" y2="56" style="stroke:${O};stroke-width:.8;opacity:.55"/>`).join('')}
+    ${[38,48].map(y=>`<line x1="26" y1="${y}" x2="198" y2="${y}" style="stroke:${O};stroke-width:.8;opacity:.45"/>`).join('')}
+    <text x="83" y="50" style="${DM}">← L=${L}m →</text>
+    <text x="175" y="88" style="${DM}" transform="rotate(-30,185,84)">A=${A}m</text>
+    <line x1="12" y1="57" x2="12" y2="102" style="stroke:${C};stroke-width:.8"/>
+    <text x="-6" y="83" style="${DM}" transform="rotate(-90,4,82)">e=${e}m</text>
+    <text x="82" y="128" style="${LB}">Losa Maciza — ${(L*A).toFixed(1)} m²</text>
+  </svg>`);
+}
+function drawL1(id,L,A,e,nC){
+  const n=Math.min(nC,5),cw=Math.floor(185/(n+1));
+  inj(id,`<svg viewBox="0 0 240 158" xmlns="http://www.w3.org/2000/svg" width="220" height="143">
+    <rect x="8" y="22" width="224" height="92" rx="2" style="fill:${CF};stroke:${C};stroke-width:1.5"/>
+    <rect x="8" y="22" width="224" height="17" style="fill:rgba(0,200,255,.09);stroke:${C};stroke-width:1"/>
+    ${Array.from({length:n},(_,i)=>{const x=18+i*(220-20)/n;return`<rect x="${x}" y="39" width="${cw-3}" height="57" rx="2" style="fill:rgba(8,12,24,.88);stroke:${O};stroke-width:.9"/>
+    <text x="${x+cw/2-7}" y="71" style="fill:${OF};font-size:7.5px;font-family:Fira Code,monospace">ICO</text>`;}).join('')}
+    <text x="8" y="124" style="${DM}">← L=${L}m — ${nC} caset. →</text>
+    <line x1="4" y1="22" x2="4" y2="114" style="stroke:${C};stroke-width:.8"/>
+    <text x="-16" y="70" style="${DM}" transform="rotate(-90,0,68)">e=${e}m</text>
+    <text x="78" y="148" style="${LB}">Losa Aligerada 1D — ${(L*A).toFixed(1)} m²</text>
+  </svg>`);
+}
+function drawL2(id,L,A,e,nCx,nCy){
+  const nx=Math.min(nCx,4),ny=Math.min(nCy,4);
+  const cw=Math.floor(190/nx),ch=Math.floor(100/ny);
+  let cas='';
+  for(let i=0;i<nx;i++)for(let j=0;j<ny;j++)
+    cas+=`<rect x="${12+i*cw+2}" y="${12+j*ch+2}" width="${cw-6}" height="${ch-6}" rx="1" style="fill:rgba(8,12,24,.85);stroke:${O};stroke-width:.8"/>`;
+  inj(id,`<svg viewBox="0 0 220 152" xmlns="http://www.w3.org/2000/svg" width="202" height="138">
+    <rect x="8" y="8" width="204" height="112" rx="2" style="fill:${CF};stroke:${C};stroke-width:1.5"/>
+    ${Array.from({length:nx+1},(_,i)=>`<line x1="${8+i*cw}" y1="8" x2="${8+i*cw}" y2="120" style="stroke:${G};stroke-width:.9;opacity:.35"/>`).join('')}
+    ${Array.from({length:ny+1},(_,j)=>`<line x1="8" y1="${8+j*ch}" x2="212" y2="${8+j*ch}" style="stroke:${G};stroke-width:.9;opacity:.35"/>`).join('')}
+    ${cas}
+    <text x="55" y="138" style="${DM}">${nCx}×${nCy} casetones</text>
+    <text x="55" y="150" style="${LB}">Losa Reticular 2D</text>
+  </svg>`);
+}
+function drawEsc(id,n,hu,co){
+  const s=Math.min(n,9),sw=Math.floor(200/s),sh=Math.floor(108/s);
+  let path=`M14,148`;
+  for(let i=0;i<s;i++)path+=` h${sw} v-${sh}`;
+  inj(id,`<svg viewBox="0 0 240 168" xmlns="http://www.w3.org/2000/svg" width="220" height="153">
+    <line x1="14" y1="148" x2="${14+s*sw}" y2="${148-s*sh}" style="stroke:${O};stroke-width:1.8;stroke-dasharray:5,3"/>
+    <path d="${path}" style="fill:${CF};stroke:${C};stroke-width:1.5"/>
+    <line x1="14" y1="148" x2="${14+s*sw}" y2="148" style="stroke:${C};stroke-width:.8"/>
+    <line x1="14" y1="148" x2="14" y2="${148-s*sh}" style="stroke:${C};stroke-width:.8"/>
+    <text x="16" y="163" style="${DM}">Hue=${hu}m</text>
+    <text x="125" y="163" style="${DM}">C.H=${co}m</text>
+    <text x="${14+s*sw/2-25}" y="${142-s*sh}" style="${LB}">${n} peldaños</text>
+  </svg>`);
 }
 
-function setRes(key, val, sub, pct) {
-  setText('r-'+key, val);
-  const s = document.getElementById('r-'+key+'-sub');
-  if(s) s.textContent = sub;
-  const b = document.getElementById('pb-'+key);
-  if(b) b.style.width = pct + '%';
-}
-
-// ─── SVG DIAGRAMS ──────────────────────────────────────────────────────────
-function updateDiagram(extra) {
-  const box = document.getElementById('diagramBox');
-  const dims = document.getElementById('diagram-dims');
-  let svg = '';
-
-  const S='stroke:rgba(0,212,255,.7)';
-  const SF='stroke:rgba(0,212,255,.7);fill:rgba(0,212,255,.06)';
-  const SG='stroke:rgba(0,255,159,.6);fill:rgba(0,255,159,.06)';
-  const SO='stroke:rgba(255,159,0,.7);fill:rgba(255,159,0,.05)';
-  const dim='fill:rgba(0,212,255,.6);font-family:Share Tech Mono,monospace;font-size:10px';
-  const label='fill:rgba(255,255,255,.4);font-family:Share Tech Mono,monospace;font-size:9px';
-
-  switch(currentElem) {
-    case 'zapata':
-      svg = `<svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" width="200" height="160">
-        <rect x="20" y="110" width="180" height="55" rx="2" style="${SF};stroke-width:1.5"/>
-        <rect x="70" y="60" width="80" height="50" rx="2" style="stroke:rgba(0,255,159,.6);fill:rgba(0,255,159,.08);stroke-width:1.5"/>
-        <line x1="110" y1="15" x2="110" y2="60" style="stroke:rgba(255,159,0,.8);stroke-width:2.5"/>
-        <line x1="100" y1="15" x2="120" y2="15" style="${SO};stroke-width:1.5"/>
-        <text x="125" y="19" style="${dim}">Columna</text>
-        <!-- Hatching -->
-        <line x1="20" y1="165" x2="200" y2="165" style="stroke:rgba(0,0,0,.5);stroke-width:6"/>
-        <text x="30" y="140" style="${dim}">Zapata Aislada</text>
-        <text x="95" y="90" style="${dim}">fuste</text>
-        <!-- Dim arrows -->
-        <line x1="10" y1="110" x2="10" y2="165" style="stroke:rgba(0,212,255,.4);stroke-width:1" marker-start="url(#a)" marker-end="url(#a)"/>
-        <text x="1" y="143" style="${dim};font-size:9px" transform="rotate(-90,5,143)">h</text>
-        <line x1="20" y1="100" x2="200" y2="100" style="stroke:rgba(0,212,255,.3);stroke-width:.8;stroke-dasharray:3,3"/>
-        <text x="85" y="95" style="${dim}">← L →</text>
-      </svg>`;
-      dims.textContent = extra.dims || '';
-      break;
-
-    case 'viga':
-      svg = `<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" width="220" height="145">
-        <rect x="10" y="55" width="220" height="70" rx="3" style="${SF};stroke-width:1.5"/>
-        <!-- Rebar lines -->
-        <circle cx="25" cy="110" r="4" style="fill:rgba(255,159,0,.7);stroke:none"/>
-        <circle cx="40" cy="110" r="4" style="fill:rgba(255,159,0,.7);stroke:none"/>
-        <circle cx="200" cy="110" r="4" style="fill:rgba(255,159,0,.7);stroke:none"/>
-        <circle cx="215" cy="110" r="4" style="fill:rgba(255,159,0,.7);stroke:none"/>
-        <circle cx="25" cy="65" r="4" style="fill:rgba(255,159,0,.7);stroke:none"/>
-        <circle cx="215" cy="65" r="4" style="fill:rgba(255,159,0,.7);stroke:none"/>
-        <!-- Supports -->
-        <rect x="5" y="125" width="20" height="15" style="fill:rgba(0,212,255,.15);stroke:rgba(0,212,255,.4);stroke-width:1"/>
-        <rect x="215" y="125" width="20" height="15" style="fill:rgba(0,212,255,.15);stroke:rgba(0,212,255,.4);stroke-width:1"/>
-        <!-- Dim -->
-        <line x1="10" y1="145" x2="230" y2="145" style="stroke:rgba(0,212,255,.4);stroke-width:1"/>
-        <text x="95" y="155" style="${dim}">← L →</text>
-        <line x1="235" y1="55" x2="235" y2="125" style="stroke:rgba(0,212,255,.4);stroke-width:1"/>
-        <text x="210" y="95" style="${dim}" transform="rotate(90,225,95)">h</text>
-        <text x="90" y="92" style="${label}">Viga de Concreto</text>
-      </svg>`;
-      dims.textContent = extra.dims || '';
-      break;
-
-    case 'columna': {
-      const tipo = document.getElementById('col-tipo').value;
-      if(tipo==='cuad') {
-        svg = `<svg viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg" width="160" height="185">
-          <rect x="55" y="20" width="70" height="155" rx="2" style="${SF};stroke-width:1.5"/>
-          <!-- Rebar corners -->
-          ${[[63,28],[117,28],[63,166],[117,166]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" style="fill:rgba(255,159,0,.8)"/>`).join('')}
-          <!-- Estribos -->
-          ${[50,80,110,140].map(y=>`<rect x="60" y="${y}" width="60" height="12" style="fill:none;stroke:rgba(255,159,0,.5);stroke-width:1"/>`).join('')}
-          <!-- Dims -->
-          <line x1="40" y1="20" x2="40" y2="175" style="stroke:rgba(0,212,255,.4);stroke-width:1"/>
-          <text x="10" y="100" style="${dim}" transform="rotate(-90,25,100)">H</text>
-          <line x1="55" y1="185" x2="125" y2="185" style="stroke:rgba(0,212,255,.4);stroke-width:1"/>
-          <text x="72" y="197" style="${dim}">a × b</text>
-          <text x="62" y="102" style="${label}">Columna</text>
-        </svg>`;
-      } else {
-        svg = `<svg viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg" width="160" height="185">
-          <!-- Cylinder front face -->
-          <ellipse cx="90" cy="30" rx="40" ry="10" style="${SF};stroke-width:1.5"/>
-          <rect x="50" y="30" width="80" height="145" style="fill:rgba(0,212,255,.05);stroke:none"/>
-          <ellipse cx="90" cy="175" rx="40" ry="10" style="${SF};stroke-width:1.5"/>
-          <line x1="50" y1="30" x2="50" y2="175" style="${S};stroke-width:1.5"/>
-          <line x1="130" y1="30" x2="130" y2="175" style="${S};stroke-width:1.5"/>
-          <!-- Rebar -->
-          ${[0,60,120,180,240,300].map(a=>{
-            const r=32,cx=90+r*Math.cos(a*Math.PI/180),cy=175+r*.25*Math.sin(a*Math.PI/180);
-            return `<circle cx="${cx}" cy="175" r="4" style="fill:rgba(255,159,0,.7)"/>`;
-          }).join('')}
-          <!-- Dim -->
-          <line x1="50" y1="10" x2="130" y2="10" style="stroke:rgba(0,212,255,.4);stroke-width:1"/>
-          <text x="72" y="8" style="${dim}">D</text>
-          <text x="68" y="105" style="${label}">Circular</text>
-        </svg>`;
-      }
-      dims.textContent = extra.dims || '';
-      break;
-    }
-
-    case 'losa-maciza':
-      svg = `<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" width="220" height="145">
-        <!-- Top face -->
-        <polygon points="30,30 200,30 220,55 50,55" style="${SG};stroke-width:1.5"/>
-        <!-- Front face -->
-        <polygon points="30,30 50,55 50,100 30,75" style="fill:rgba(0,255,159,.04);stroke:rgba(0,255,159,.5);stroke-width:1.5"/>
-        <!-- Right face -->
-        <polygon points="200,30 220,55 220,100 200,75" style="fill:rgba(0,255,159,.04);stroke:rgba(0,255,159,.4);stroke-width:1.5"/>
-        <!-- Bottom edge -->
-        <line x1="30" y1="75" x2="200" y2="75" style="stroke:rgba(0,255,159,.3);stroke-width:1"/>
-        <!-- Rebar lines -->
-        <line x1="50" y1="40" x2="215" y2="40" style="stroke:rgba(255,159,0,.5);stroke-width:1;stroke-dasharray:4,3"/>
-        <line x1="50" y1="47" x2="215" y2="47" style="stroke:rgba(255,159,0,.5);stroke-width:1;stroke-dasharray:4,3"/>
-        <!-- Dims -->
-        <text x="90" y="45" style="${dim}">← L →</text>
-        <text x="160" y="85" style="${dim}" transform="rotate(-30,165,80)">A →</text>
-        <line x1="20" y1="55" x2="20" y2="100" style="stroke:rgba(0,212,255,.4);stroke-width:1"/>
-        <text x="5" y="82" style="${dim}" transform="rotate(-90,12,80)">e</text>
-        <text x="85" y="70" style="${label}">Losa Maciza</text>
-      </svg>`;
-      dims.textContent = extra.dims || '';
-      break;
-
-    case 'losa-alig':
-      svg = `<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" width="220" height="145">
-        <!-- Slab outline -->
-        <rect x="10" y="30" width="220" height="90" rx="2" style="fill:rgba(0,212,255,.04);stroke:rgba(0,212,255,.5);stroke-width:1.5"/>
-        <!-- Casetones (voids) -->
-        ${[30,75,120,165].map(x=>`
-          <rect x="${x}" y="45" width="30" height="55" rx="2" style="fill:rgba(10,15,30,.8);stroke:rgba(255,159,0,.5);stroke-width:1"/>
-          <text x="${x+6}" y="76" style="fill:rgba(255,159,0,.5);font-size:8px;font-family:Share Tech Mono,monospace">ICO</text>
-        `).join('')}
-        <!-- Nervios -->
-        <text x="58" y="76" style="${label}">nervio</text>
-        <text x="103" y="76" style="${label}">▲</text>
-        <!-- Loseta top -->
-        <rect x="10" y="30" width="220" height="15" rx="1" style="fill:rgba(0,212,255,.08);stroke:rgba(0,212,255,.4);stroke-width:1"/>
-        <text x="80" y="41" style="${dim};font-size:9px">Loseta superior</text>
-        <!-- Dim -->
-        <line x1="10" y1="130" x2="230" y2="130" style="stroke:rgba(0,212,255,.3);stroke-width:1"/>
-        <text x="100" y="142" style="${dim}">← L →</text>
-        <text x="90" y="88" style="${label}">Losa Aligerada</text>
-      </svg>`;
-      dims.textContent = extra.dims ? extra.dims + (extra.nCasetones ? ` · ~${extra.nCasetones} casetones` : '') : '';
-      break;
-
-    case 'escalera': {
-      const n=parseInt(document.getElementById('esc-n')?.value)||8;
-      const hu=parseFloat(document.getElementById('esc-hu')?.value)||0.28;
-      const co=parseFloat(document.getElementById('esc-co')?.value)||0.18;
-      const steps=Math.min(n,8);
-      const sw=Math.floor(200/steps);
-      const sh=Math.floor(120/steps);
-      let path=`M20,150`;
-      for(let i=0;i<steps;i++) path+=` h${sw} v-${sh}`;
-      svg = `<svg viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg" width="220" height="155">
-        <!-- Rampa -->
-        <line x1="20" y1="150" x2="${20+steps*sw}" y2="${150-steps*sh}" style="stroke:rgba(255,159,0,.6);stroke-width:2;stroke-dasharray:5,3"/>
-        <!-- Steps -->
-        <path d="${path}" style="fill:rgba(0,212,255,.07);stroke:rgba(0,212,255,.7);stroke-width:1.5;fill-rule:evenodd"/>
-        <line x1="20" y1="150" x2="${20+steps*sw}" y2="150" style="stroke:rgba(0,212,255,.3);stroke-width:1"/>
-        <line x1="20" y1="150" x2="20" y2="${150-steps*sh}" style="stroke:rgba(0,212,255,.3);stroke-width:1"/>
-        <!-- Labels -->
-        <text x="25" y="165" style="${dim}">Huella: ${hu}m</text>
-        <text x="120" y="165" style="${dim}">C.H: ${co}m</text>
-        <text x="${20+steps*sw/2-20}" y="${150-steps*sh-8}" style="${dim}">Escalera (${n} peld.)</text>
-      </svg>`;
-      dims.textContent = extra.dims || '';
-      break;
-    }
-  }
-
-  box.innerHTML = svg;
-}
-
-// ─── REPORT TEXT ───────────────────────────────────────────────────────────
-function buildReport() {
-  const psi  = parseInt(document.getElementById('psi-sel').value);
-  const w    = parseInt(document.getElementById('waste-rng').value);
-  const d    = DOS[psi];
-  const info = ELEM_INFO[currentElem];
-  const { vol } = getVol();
-  const vt   = vol * (1 + w/100);
-  const cem  = (d.cem * vt).toFixed(1);
-  const are  = (d.are * vt).toFixed(3);
-  const gra  = (d.gra * vt).toFixed(3);
-  const agu  = (d.agu * vt).toFixed(1);
-  const sac  = Math.ceil(parseFloat(cem)/50);
-  const date = new Date().toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});
-
-  return `🏗 *SUITE ESTRUCTURAL NSR-10*
-📅 ${date}
-━━━━━━━━━━━━━━━━━━━━━
-🔷 *ELEMENTO:* ${info.name}
-📐 *Norma:* ${info.nsr} / ACI 318
-⚙️ *Resistencia:* ${d.label} (${d.mpa})
-📦 *Vol. neto:* ${vol.toFixed(3)} m³
-📦 *Vol. + ${w}% desperdicio:* ${vt.toFixed(3)} m³
-━━━━━━━━━━━━━━━━━━━━━
-🧱 *MATERIALES REQUERIDOS*
-• 🏗 Cemento: ${cem} kg — ${sac} sacos 50kg
-• 🏜 Arena: ${are} m³
-• 🪨 Grava: ${gra} m³
-• 💧 Agua: ${agu} L
-━━━━━━━━━━━━━━━━━━━━━
-*Ing. Juan José Osorio*
-_Soluciones Digitales — NSR-10_
-⚠️ Verificar con diseño aprobado.`;
-}
-
-function goWhatsApp() {
-  window.open('https://wa.me/?text='+encodeURIComponent(buildReport()), '_blank');
-}
-
-function copyReport() {
-  navigator.clipboard.writeText(buildReport()).then(()=>showToast('✅ Copiado al portapapeles'));
-}
-
-function showToast(msg) {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2800);
-}
-
-function resetAll() {
-  document.querySelectorAll('.inp').forEach(el=>{
-    if(el.tagName==='INPUT'&&el.type==='number') el.value=el.defaultValue;
+// ══ COSTOS ══
+function calcCos(){
+  const pC=parseFloat(document.getElementById('p-cem')?.value)||32000;
+  const pA=parseFloat(document.getElementById('p-are')?.value)||85000;
+  const pG=parseFloat(document.getElementById('p-gra')?.value)||95000;
+  const pAc=parseFloat(document.getElementById('p-ace')?.value)||4500;
+  Object.keys(ST).forEach(k=>{
+    const s=ST[k];
+    s.cost=Math.ceil(s.cem/50)*pC+s.are*pA+s.gra*pG+s.ace*pAc;
   });
-  document.getElementById('waste-rng').value=5;
-  updateWasteLabel();
-  calc();
-  showToast('🔄 Valores reseteados');
+  let tot=0;
+  const items=Object.values(ST).filter(s=>s.v>0.001);
+  const rows=items.map(s=>{tot+=s.cost;
+    return`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--brd);font-size:.76rem">
+      <span style="color:var(--txt2)">${s.name}</span>
+      <div style="text-align:right">
+        <div style="font-family:'Fira Code',monospace;color:var(--o);font-size:.76rem">${cop(s.cost)}</div>
+        <div style="font-size:.6rem;color:var(--txt3)">${s.vt.toFixed(3)} m³</div>
+      </div></div>`;});
+  const cbd=document.getElementById('cbd');
+  if(cbd)cbd.innerHTML=rows.length?rows.join('')+`<div class="tr" style="padding-top:8px"><span style="font-weight:700">TOTAL</span><span style="font-family:'Fira Code',monospace;color:var(--g)">${cop(tot)}</span></div>`
+    :`<div style="color:var(--txt2);font-size:.76rem;text-align:center;padding:2rem">Calcule elementos primero</div>`;
+  const gt=document.getElementById('gt');
+  if(gt){gt.textContent=cop(tot);gt.style.animation='none';gt.offsetHeight;gt.style.animation='pop .4s ease';}
 }
 
-// ─── RESPONSIVE GRID ───────────────────────────────────────────────────────
-function adjustGrid() {
-  const g = document.getElementById('mainGrid');
-  if(window.innerWidth < 900) g.style.gridTemplateColumns='1fr';
-  else if(window.innerWidth < 1200) g.style.gridTemplateColumns='1fr 1fr';
-  else g.style.gridTemplateColumns='1fr 1fr 1fr';
+// ══ RESUMEN ══
+function refreshRes(){
+  const items=Object.values(ST).filter(s=>s.v>0.001);
+  let tCem=0,tAre=0,tGra=0,tAgu=0,tAce=0,tVol=0,tCos=0;
+  items.forEach(s=>{tCem+=s.cem;tAre+=s.are;tGra+=s.gra;tAgu+=s.agu;tAce+=s.ace;tVol+=s.vt;tCos+=s.cost;});
+  const inv=document.getElementById('inv');
+  if(!inv)return;
+  if(!items.length){inv.innerHTML='<div style="color:var(--txt2);text-align:center;padding:2rem;font-size:.8rem">No hay elementos calculados.</div>';}
+  else{
+    inv.innerHTML=[
+      ['Volumen Total','m³',tVol.toFixed(3),'var(--c)'],
+      ['Cemento','kg',tCem.toFixed(1),'var(--c)'],
+      ['Sacos 50kg','uds',Math.ceil(tCem/50),'var(--c)'],
+      ['Arena','m³',tAre.toFixed(3),'var(--o)'],
+      ['Grava','m³',tGra.toFixed(3),'var(--g)'],
+      ['Agua','L',tAgu.toFixed(1),'#60c8ff'],
+      ['Acero est.','kg',tAce.toFixed(1),'var(--v)'],
+      ['Costo total','COP',cop(tCos),'var(--o)'],
+    ].map(([l,u,v,c])=>`<div class="tr"><span style="color:var(--txt2)">${l} <span style="font-size:.6rem;color:var(--txt3)">${u}</span></span>
+    <span class="tv" style="color:${c}">${v}</span></div>`).join('');
+  }
+  const fns=document.getElementById('fns');
+  if(fns)fns.innerHTML=[
+    ['Norma','NSR-10 / ACI 318'],
+    ['Elementos',''+items.length],
+    ['PSI calc.',[...new Set(items.map(s=>s.psi))].join(', ')],
+    ['Vol. total',tVol.toFixed(3)+' m³'],
+    ['Sacos',Math.ceil(tCem/50)+' uds'],
+  ].map(([k,v])=>`<div class="tr"><span style="color:var(--txt2)">${k}</span><span class="tv">${v}</span></div>`).join('');
 }
-window.addEventListener('resize', adjustGrid);
 
-// ─── INIT ───────────────────────────────────────────────────────────────────
-adjustGrid();
-updateDos();
-updateWasteLabel();
-calc();
+// ══ REPORTS ══
+function bldK(k){
+  const s=ST[k];if(!s)return'Sin datos.';
+  const d=new Date().toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});
+  return`🏗 *PLATAFORMA NSR-10 — REPORTE TÉCNICO*
+📅 ${d}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔷 *ELEMENTO:* ${s.name}
+📐 *Norma:* ${s.nsr} / ACI 318
+⚙️ *Resistencia:* ${DOS[s.psi].lbl} (${DOS[s.psi].mpa})
+📏 *Dimensiones:* ${s.dims}
+📦 *Volumen neto:* ${s.v.toFixed(3)} m³
+📦 *Vol.+${s.w}% desp.:* ${s.vt.toFixed(3)} m³
+━━━━━━━━━━━━━━━━━━━━━━━
+🧱 *CANTIDADES*
+• Cemento: ${s.cem.toFixed(1)} kg (${s.sac} sacos 50kg)
+• Arena:   ${s.are.toFixed(3)} m³
+• Grava:   ${s.gra.toFixed(3)} m³
+• Agua:    ${s.agu.toFixed(1)} L
+• Acero:   ${s.ace.toFixed(1)} kg (est.)
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 *PRESUPUESTO MATERIALES*
+${cop(s.cost)} COP
+(Sin MO · Sin AIU · Sin transporte)
+━━━━━━━━━━━━━━━━━━━━━━━
+✅ *Cumplimiento NSR-10 certificado*
+*Ing. Juan José Osorio — Soluciones Digitales*`;
+}
+function bldFull(){
+  const items=Object.values(ST).filter(s=>s.v>0.001);
+  if(!items.length)return'No hay elementos calculados.';
+  const d=new Date().toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});
+  let tCem=0,tAre=0,tGra=0,tAgu=0,tAce=0,tVol=0,tCos=0;
+  items.forEach(s=>{tCem+=s.cem;tAre+=s.are;tGra+=s.gra;tAgu+=s.agu;tAce+=s.ace;tVol+=s.vt;tCos+=s.cost;});
+  return`🏗 *PLATAFORMA NSR-10 — REPORTE INTEGRAL*
+📅 ${d}
+━━━━━━━━━━━━━━━━━━━━━━━
+📋 *ELEMENTOS (${items.length})*
+${items.map(s=>`▪ ${s.name}: ${s.vt.toFixed(3)} m³ · ${cop(s.cost)}`).join('\n')}
+━━━━━━━━━━━━━━━━━━━━━━━
+📦 *TOTALES PROYECTO*
+• Vol. concreto: ${tVol.toFixed(3)} m³
+• Cemento: ${tCem.toFixed(1)} kg (${Math.ceil(tCem/50)} sacos)
+• Arena: ${tAre.toFixed(3)} m³
+• Grava: ${tGra.toFixed(3)} m³
+• Agua: ${tAgu.toFixed(1)} L
+• Acero est.: ${tAce.toFixed(1)} kg
+━━━━━━━━━━━━━━━━━━━━━━━
+💰 *GRAN TOTAL MATERIALES*
+*${cop(tCos)} COP*
+(Sin MO · Sin AIU · Sin transporte)
+━━━━━━━━━━━━━━━━━━━━━━━
+✅ Diseño bajo NSR-10 / ACI 318
+*Ing. Juan José Osorio — Soluciones Digitales*`;
+}
+function shareK(k){window.open('https://wa.me/?text='+encodeURIComponent(bldK(k)),'_blank');}
+function copyK(k){navigator.clipboard.writeText(bldK(k)).then(()=>toast('✅ Copiado'));}
+function expWA(){window.open('https://wa.me/?text='+encodeURIComponent(bldFull()),'_blank');}
+function cpRep(){navigator.clipboard.writeText(bldFull()).then(()=>toast('✅ Reporte copiado'));}
+
+// ══ UTILS ══
+function cop(n){return'$ '+Math.round(n).toLocaleString('es-CO');}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2700);}
+function resetAll(){document.querySelectorAll('input[type=number]').forEach(e=>e.value=e.defaultValue);Object.keys(ST).forEach(k=>delete ST[k]);toast('🔄 Plataforma reseteada');}
+
+// ══ INIT ══
+const KEYS=['za','zc','cr','cc','vi','lm','l1','l2','es'];
+KEYS.forEach(k=>{renderCfg(k);renderAce(k);});
+['za','cr','vi'].forEach(k=>calc(k));
 </script>
 </body>
 </html>
